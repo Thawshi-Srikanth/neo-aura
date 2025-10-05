@@ -135,6 +135,7 @@ export default function AsteroidImpactSimulation() {
 
   return (
     <div className="relative w-full h-screen bg-black overflow-hidden">
+
       {/* Simulation UI Components */}
       <SimulationUI
         impactData={simulationState.impactData}

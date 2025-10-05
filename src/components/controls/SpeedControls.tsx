@@ -95,7 +95,7 @@ const SpeedControls: React.FC<SpeedControlsProps> = ({
   const currentPreset = SPEED_PRESETS[currentSpeedIndex];
 
   return (
-    <div className="fixed bottom-28 left-1/2 transform -translate-x-1/2 z-50">
+    <div className="fixed bottom-5 right-5 z-50">
       <div className='bg-black/90 backdrop-blur-xl  rounded-xl p-4 shadow-2xl'>
         <div className="flex items-center gap-4">
           {/* Simulation Control Group */}

@@ -6,9 +6,11 @@ import { Badge } from '../ui/badge';
 import { AsteroidWireframe3D } from '../visualizations/AsteroidWireframe3D';
 import { asteroidData } from '../../data/asteroids';
 import type { Asteroid } from '../../types/asteroid';
+import { useNavigation } from '../../contexts/NavigationContext';
 
 export default function Dashboard() {
     const navigate = useNavigate();
+    const { startNavigation } = useNavigation();
     const [selectedAsteroidIndex, setSelectedAsteroidIndex] = useState(-1);
 
     const handleAsteroidSelect = (_asteroid: Asteroid, index: number) => {
@@ -17,8 +19,9 @@ export default function Dashboard() {
 
 
     const handleEnterPress = (asteroid: Asteroid) => {
-        console.log('handleEnterPress called with asteroid:', asteroid.name, 'ID:', asteroid.id);
-        console.log('Navigating to:', `/impact-simulation/${asteroid.id}`);
+        console.log('🎯 handleEnterPress called with asteroid:', asteroid.name, 'ID:', asteroid.id);
+        console.log('🎯 Navigating to:', `/impact-simulation/${asteroid.id}`);
+        startNavigation('Loading Impact Simulation');
         navigate(`/impact-simulation/${asteroid.id}`);
     };
 
@@ -32,15 +35,15 @@ export default function Dashboard() {
     }));
 
     return (
-        <div className="h-screen bg-black text-white overflow-hidden">
+        <div className="min-h-screen h-full w-full flex items-center justify-center bg-black text-white overflow-auto">
             {/* Main Dashboard */}
-            <div className="h-full flex flex-col">
-                 <div className="flex-1 max-w-6xl mx-auto px-3 py-2 w-full h-full">
-                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 h-full">
+            <div className="min-h-full flex flex-col h-full w-full items-center justify-center">
+                 <div className="flex-1 max-w-6xl mx-auto px-3 py-2 w-full min-h-full">
+                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 min-h-full">
 
                         {/* Left Column - Featured Asteroids with Search */}
-                        <div className="lg:col-span-1 h-full">
-                            <Card className="bg-black h-full flex flex-col">
+                        <div className="lg:col-span-1 min-h-full">
+                            <Card className="bg-black min-h-full flex flex-col">
                                 <CardHeader className="flex-shrink-0 pb-2">
                                     <div className="flex items-center justify-between">
                                         <CardTitle className="text-white text-sm">Featured Asteroids</CardTitle>
@@ -64,7 +67,10 @@ export default function Dashboard() {
                                                 <Card
                                                     key={asteroid.id}
                                                     className="bg-black cursor-pointer group aspect-square relative overflow-hidden"
-                                                    onClick={() => navigate(`/impact-simulation/${asteroid.id}`)}
+                                                    onClick={() => {
+                                                        startNavigation('Loading Impact Simulation');
+                                                        navigate(`/impact-simulation/${asteroid.id}`);
+                                                    }}
                                                 >
                                                    <CardContent className="p-0 h-full flex flex-col relative">
                                                        {/* 3D Wireframe Asteroid Visualization */}
@@ -87,6 +93,7 @@ export default function Dashboard() {
                                                                className="bg-white text-black px-4 py-2 rounded-full font-medium text-sm hover:bg-gray-200 transition-colors flex items-center space-x-2 cursor-pointer"
                                                                onClick={(e) => {
                                                                    e.stopPropagation();
+                                                                   startNavigation('Loading Impact Simulation');
                                                                    navigate(`/impact-simulation/${asteroid.id}`);
                                                                }}
                                                            >
@@ -104,7 +111,7 @@ export default function Dashboard() {
                        </div>
 
                         {/* Right Column - AURA Header */}
-                        <div className="lg:col-span-2 h-full flex flex-col space-y-3">
+                        <div className="lg:col-span-2 min-h-full flex flex-col space-y-3">
 
                             {/* AURA Header */}
                             <Card className="bg-black flex-shrink-0">
@@ -203,7 +210,10 @@ export default function Dashboard() {
                                              
                                              <div className="text-center space-y-2">
                                                  <button
-                                                     onClick={() => navigate('/orbital-visualization')}
+                                                     onClick={() => {
+                                                         startNavigation('Loading Orbital Visualization');
+                                                         navigate('/orbital-visualization');
+                                                     }}
                                                      className="w-full px-4 py-2 bg-white text-black font-medium rounded hover:bg-gray-200 transition-colors text-xs cursor-pointer"
                                                  >
                                                      Launch Orbital View

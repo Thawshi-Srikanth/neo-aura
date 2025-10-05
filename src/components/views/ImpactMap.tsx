@@ -1,8 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, useMap, Circle, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { ImpactData } from "../../types/simulation";
+import { Button } from "../ui/button";
+import { Maximize2Icon, Minimize2Icon } from "lucide-react";
 
 interface ImpactAnimationProps {
   center: [number, number];
@@ -191,48 +193,37 @@ interface ImpactMapProps {
 }
 
 export default function ImpactMap({ impactData }: ImpactMapProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
   if (!impactData) return null;
 
   const position: [number, number] = [impactData.lat, impactData.lon];
 
   return (
-    <div className="absolute bottom-5 right-5 z-10 border-2  rounded-lg overflow-hidden shadow-2xl">
-      {/* Legend */}
-      <div className="absolute top-2 right-2 z-[1000] bg-gray-900/95 backdrop-blur-sm text-white p-2 rounded text-xs space-y-1 border border-gray-600">
-        <div className="font-bold mb-1">Impact Zones</div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-red-600"></div>
-          <span>Crater</span>
+    <div className={`absolute top-20 left-5 z-10 transition-all duration-300 ${isExpanded ? 'w-[50vw]' : 'w-[300px]'}`}>
+      {/* Map Container */}
+      <div className={`border-2 rounded-lg overflow-hidden shadow-2xl ${isExpanded ? 'h-[50vh]' : 'h-[200px]'}`}>
+        {/* Expand/Collapse Button */}
+        <div className="absolute top-2 right-2 z-[1000]">
+          <Button
+            onClick={() => setIsExpanded(!isExpanded)}
+            variant="secondary"
+            size="icon"
+            className="bg-black/50 backdrop-blur-sm"
+          >
+            {isExpanded ? <Minimize2Icon className="w-4 h-4" /> : <Maximize2Icon className="w-4 h-4" />}
+          </Button>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-orange-600"></div>
-          <span>Ejecta</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-orange-400"></div>
-          <span>Airblast</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-          <span>Thermal</span>
-        </div>
-        {impactData.physics && impactData.physics.seismicMagnitude > 5 && (
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-purple-600"></div>
-            <span>Seismic</span>
-          </div>
-        )}
-      </div>
 
-      <MapContainer
-        center={position}
-        zoom={10}
-        className="w-[300px] h-[200px]"
-        scrollWheelZoom={true}
-        zoomControl={true}
-        minZoom={8}
-        maxZoom={15}
-      >
+        <MapContainer
+          center={position}
+          zoom={10}
+          className="w-full h-full"
+          scrollWheelZoom={true}
+          zoomControl={true}
+          minZoom={8}
+          maxZoom={15}
+        >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
@@ -243,7 +234,36 @@ export default function ImpactMap({ impactData }: ImpactMapProps) {
         ) : (
           <ImpactAnimation center={position} />
         )}
-      </MapContainer>
+        </MapContainer>
+      </div>
+
+      {/* Legend - Below the map */}
+      <div className="mt-2  backdrop-blur-sm text-white p-2 rounded text-xs ">
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-red-600"></div>
+            <span>Crater</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-orange-600"></div>
+            <span>Ejecta</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-orange-400"></div>
+            <span>Airblast</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+            <span>Thermal</span>
+          </div>
+          {impactData.physics && impactData.physics.seismicMagnitude > 5 && (
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-purple-600"></div>
+              <span>Seismic</span>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

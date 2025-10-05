@@ -234,7 +234,7 @@ const NEOControls: React.FC<NEOControlsProps> = ({
   };
 
   return (
-    <div className="fixed top-4 right-4 z-20 space-y-2">
+    <div className="fixed bottom-4 right-4 z-20 space-y-2">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors shadow-lg block w-full"

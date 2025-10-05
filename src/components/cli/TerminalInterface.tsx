@@ -313,10 +313,11 @@ export const TerminalInterface: React.FC<TerminalInterfaceProps> = ({
           borderRadius: '12px',
           overflow: 'hidden',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          boxShadow: '0 25px 50px -12px rgba(0, 255, 65, 0.25), 0 0 0 1px rgba(0, 255, 65, 0.1)',
+          boxShadow: 'none',
           transform: isDragging ? 'scale(1.02)' : 'scale(1)',
           left: `${terminalPosition.x}px`,
-          top: `${terminalPosition.y}px`
+          top: `${terminalPosition.y}px`,
+          padding: '16px'
         }}
         onMouseDown={(e) => {
           if (e.target === e.currentTarget || (e.target as HTMLElement).closest('.terminal-header')) {
@@ -370,7 +371,7 @@ export const TerminalInterface: React.FC<TerminalInterfaceProps> = ({
               animation: connectionStatus === 'connecting' ? 'pulse 2s infinite' : 'none'
             }} />
             <div style={{ color: '#00ff41', fontSize: '14px', fontWeight: 'bold', fontFamily: 'monospace' }}>
-              🛡️ Asteroid Deflector Terminal v3.0
+              Asteroid Deflector Terminal v3.0
             </div>
             <div style={{ 
               color: connectionStatus === 'connected' ? '#00ff41' : connectionStatus === 'connecting' ? '#ffaa00' : '#ff0040',

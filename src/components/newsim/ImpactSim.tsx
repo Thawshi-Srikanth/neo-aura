@@ -189,6 +189,7 @@ const ImpactSim = () => {
 
   return (
     <div className="relative w-full h-screen bg-black overflow-hidden">
+
       {/* Canvas with WebGL error recovery */}
       <Canvas
         key="impact-sim-canvas"
