@@ -137,14 +137,14 @@ export default function App() {
             element={<AsteroidImpactSimulation />}
           />
           <Route
-            path="/imp-sim"
+            path="/asteroid-sim"
             element={
               <Suspense
                 fallback={
                   <div className="flex items-center justify-center h-screen bg-black">
                     <div className="text-white text-center">
                       <div className="animate-spin w-8 h-8 border-2 border-white/30 border-t-white rounded-full mx-auto mb-4"></div>
-                      <div>Loading Impact Simulation...</div>
+                      <div>Loading Asteroid Simulation...</div>
                     </div>
                   </div>
                 }

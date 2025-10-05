@@ -31,7 +31,7 @@ const BottomBar = () => {
           <span className="uppercase tracking-wider">Impact Sim</span>
         </NavLink>
         <NavLink
-          to="/imp-sim"
+          to="/asteroid-sim"
           className={({ isActive }) =>
             `flex py-3 px-6 min-w-[120px] items-center justify-center rounded-lg font-medium text-sm transition-all duration-200 ${
               isActive
@@ -40,7 +40,7 @@ const BottomBar = () => {
             }`
           }
         >
-          <span className="uppercase tracking-wider">Impact Sim 2</span>
+          <span className="uppercase tracking-wider">Asteroid Sim</span>
         </NavLink>
       </div>
     </nav>
