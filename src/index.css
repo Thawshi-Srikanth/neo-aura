@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -140,6 +139,7 @@
     from {
       height: 0;
     }
+
     to {
       height: var(--radix-collapsible-content-height);
     }
@@ -149,6 +149,7 @@
     from {
       height: var(--radix-collapsible-content-height);
     }
+
     to {
       height: 0;
     }
