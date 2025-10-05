@@ -6,7 +6,6 @@ import SpeedControls from "../controls/SpeedControls";
 import { Mini3DView } from "../Mini3DView";
 import { DeflectAsteroidButton } from "../cli/DeflectAsteroidButton";
 import { useParams } from "react-router-dom";
-import { SIMULATION_CONSTANTS } from "../../config/simulationConstants";
 import type { Asteroid } from "../../types/asteroid";
 import type { CollisionOrbit } from "../../utils/orbitalCollision";
 import * as THREE from "three";
@@ -68,7 +67,6 @@ export const SimulationUI = ({
       <LoadingScreen
         isVisible={showLoadingScreen}
         message="Altering asteroid orbit"
-        duration={SIMULATION_CONSTANTS.LOADING_SCREEN_DURATION}
       />
 
       {/* Impact Map */}

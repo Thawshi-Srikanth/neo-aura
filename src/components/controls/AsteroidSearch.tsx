@@ -5,12 +5,14 @@ import type { Asteroid } from '../../types/asteroid';
 interface AsteroidSearchProps {
   onAsteroidSelect: (asteroid: Asteroid, index: number) => void;
   selectedAsteroidIndex: number;
+  onEnterPress?: (asteroid: Asteroid) => void;
   disabled?: boolean;
 }
 
 export const AsteroidSearch: React.FC<AsteroidSearchProps> = ({
   onAsteroidSelect,
   selectedAsteroidIndex,
+  onEnterPress,
   disabled = false
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -51,6 +53,34 @@ export const AsteroidSearch: React.FC<AsteroidSearchProps> = ({
     onAsteroidSelect(asteroid, actualIndex);
     setIsOpen(false);
     setSearchTerm(asteroid.name);
+    
+    // Also trigger the enter press handler when clicking
+    if (onEnterPress) {
+      console.log('Click triggered onEnterPress with:', asteroid.name);
+      onEnterPress(asteroid);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    console.log('Key pressed:', e.key);
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      console.log('Enter pressed, filtered asteroids:', filteredAsteroids.length);
+      if (filteredAsteroids.length > 0) {
+        const firstAsteroid = filteredAsteroids[0];
+        console.log('First asteroid:', firstAsteroid.name);
+        const actualIndex = asteroidData.findIndex(a => a.id === firstAsteroid.id);
+        onAsteroidSelect(firstAsteroid, actualIndex);
+        setSearchTerm(firstAsteroid.name);
+        setIsOpen(false);
+        
+        // Call the enter press handler if provided
+        if (onEnterPress) {
+          console.log('Calling onEnterPress with:', firstAsteroid.name);
+          onEnterPress(firstAsteroid);
+        }
+      }
+    }
   };
 
   const selectedAsteroid = asteroidData[selectedAsteroidIndex];
@@ -70,7 +100,8 @@ export const AsteroidSearch: React.FC<AsteroidSearchProps> = ({
               setIsOpen(true);
             }}
             onFocus={() => setIsOpen(true)}
-            placeholder="Search asteroids by name or ID..."
+            onKeyDown={handleKeyDown}
+            placeholder="Search asteroids by name or ID... (Press Enter to simulate impact)"
             disabled={disabled}
             className="w-full px-3 py-2 bg-black/60 border border-white/30 text-white text-sm rounded-md focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
           />

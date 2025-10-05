@@ -11,7 +11,7 @@
 
 .terminal-container.dragging {
   transform: scale(1.02) !important;
-  box-shadow: 0 35px 60px -12px rgba(0, 255, 65, 0.4), 0 0 0 2px rgba(0, 255, 65, 0.2) !important;
+  box-shadow: none !important;
 }
 
 .terminal-header {
@@ -114,7 +114,7 @@
 .terminal-container .xterm .xterm-cursor {
   background: #00ff41 !important;
   color: #0a0a0a !important;
-  box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+  box-shadow: none;
   animation: cursorBlink 1s infinite;
 }
 
@@ -181,7 +181,7 @@
 
 /* Terminal focus effects */
 .terminal-container:focus-within {
-  box-shadow: 0 25px 50px -12px rgba(0, 255, 65, 0.4), 0 0 0 2px rgba(0, 255, 65, 0.2);
+  box-shadow: none;
 }
 
 /* Loading animation for terminal */
@@ -227,17 +227,17 @@
 
 .terminal-status.connected {
   background: #00ff41;
-  box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+  box-shadow: none;
 }
 
 .terminal-status.connecting {
   background: #ffaa00;
-  box-shadow: 0 0 10px rgba(255, 170, 0, 0.5);
+  box-shadow: none;
 }
 
 .terminal-status.disconnected {
   background: #ff0040;
-  box-shadow: 0 0 10px rgba(255, 0, 64, 0.5);
+  box-shadow: none;
 }
 
 @keyframes statusPulse {

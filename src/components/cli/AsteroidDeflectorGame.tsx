@@ -73,34 +73,28 @@ export class AsteroidDeflectorGame {
     const isHazardous = asteroid.is_potentially_hazardous_asteroid;
 
     // Banner
-    output.push('\x1b[33m╔══════════════════════════════════════════════════════════════╗\x1b[0m');
-    output.push('\x1b[33m║\x1b[0m              \x1b[32mASTEROID DEFLECTION COMMAND CENTER\x1b[0m              \x1b[33m║\x1b[0m');
-    output.push('\x1b[33m╚══════════════════════════════════════════════════════════════╝\x1b[0m');
+    output.push('\x1b[32mASTEROID DEFLECTION COMMAND CENTER\x1b[0m');
     output.push('');
 
-    // Asteroid Information Table
+    // Asteroid Information
     output.push('\x1b[36m[TARGET ASTEROID ANALYSIS]\x1b[0m');
-    output.push('┌─────────────────────────────────────────────────────────────┐');
-    output.push('│ \x1b[33mName:\x1b[0m ' + asteroid.name.padEnd(50) + ' │');
-    output.push('│ \x1b[33mID:\x1b[0m ' + asteroid.id.padEnd(52) + ' │');
-    output.push('│ \x1b[33mSize:\x1b[0m ' + diameter.toFixed(2) + ' km diameter'.padEnd(45) + ' │');
-    output.push('│ \x1b[33mVelocity:\x1b[0m ' + velocity.toFixed(1) + ' km/s'.padEnd(46) + ' │');
-    output.push('│ \x1b[33mMiss Distance:\x1b[0m ' + missDistance.toFixed(3) + ' AU'.padEnd(42) + ' │');
-    output.push('│ \x1b[33mApproach Date:\x1b[0m ' + approachDate.padEnd(40) + ' │');
-    output.push('│ \x1b[33mThreat Level:\x1b[0m ' + threatColor + threatLevel + '\x1b[0m'.padEnd(40) + ' │');
-    output.push('│ \x1b[33mHazardous:\x1b[0m ' + (isHazardous ? 'YES' : 'NO').padEnd(45) + ' │');
-    output.push('└─────────────────────────────────────────────────────────────┘');
+    output.push(`\x1b[33m>>\x1b[0m Name: ${asteroid.name}`);
+    output.push(`\x1b[33m>>\x1b[0m ID: ${asteroid.id}`);
+    output.push(`\x1b[33m>>\x1b[0m Size: ${diameter.toFixed(2)} km diameter`);
+    output.push(`\x1b[33m>>\x1b[0m Velocity: ${velocity.toFixed(1)} km/s`);
+    output.push(`\x1b[33m>>\x1b[0m Miss Distance: ${missDistance.toFixed(3)} AU`);
+    output.push(`\x1b[33m>>\x1b[0m Approach Date: ${approachDate}`);
+    output.push(`\x1b[33m>>\x1b[0m Threat Level: ${threatColor}${threatLevel}\x1b[0m`);
+    output.push(`\x1b[33m>>\x1b[0m Hazardous: ${isHazardous ? 'YES' : 'NO'}`);
     output.push('');
 
-    // Orbital Data Table
+    // Orbital Characteristics
     output.push('\x1b[36m[ORBITAL CHARACTERISTICS]\x1b[0m');
-    output.push('┌─────────────────────────────────────────────────────────────┐');
-    output.push('│ \x1b[33mOrbit Class:\x1b[0m ' + asteroid.orbital_data.orbit_class.orbit_class_type.padEnd(42) + ' │');
-    output.push('│ \x1b[33mEccentricity:\x1b[0m ' + parseFloat(asteroid.orbital_data.eccentricity).toFixed(3).padEnd(44) + ' │');
-    output.push('│ \x1b[33mInclination:\x1b[0m ' + parseFloat(asteroid.orbital_data.inclination).toFixed(1) + '°'.padEnd(45) + ' │');
-    output.push('│ \x1b[33mOrbital Period:\x1b[0m ' + parseFloat(asteroid.orbital_data.orbital_period).toFixed(1) + ' days'.padEnd(40) + ' │');
-    output.push('│ \x1b[33mSemi-major Axis:\x1b[0m ' + parseFloat(asteroid.orbital_data.semi_major_axis).toFixed(3) + ' AU'.padEnd(40) + ' │');
-    output.push('└─────────────────────────────────────────────────────────────┘');
+    output.push(`\x1b[33m>>\x1b[0m Orbit Class: ${asteroid.orbital_data.orbit_class.orbit_class_type}`);
+    output.push(`\x1b[33m>>\x1b[0m Eccentricity: ${parseFloat(asteroid.orbital_data.eccentricity).toFixed(3)}`);
+    output.push(`\x1b[33m>>\x1b[0m Inclination: ${parseFloat(asteroid.orbital_data.inclination).toFixed(1)}°`);
+    output.push(`\x1b[33m>>\x1b[0m Orbital Period: ${parseFloat(asteroid.orbital_data.orbital_period).toFixed(1)} days`);
+    output.push(`\x1b[33m>>\x1b[0m Semi-major Axis: ${parseFloat(asteroid.orbital_data.semi_major_axis).toFixed(3)} AU`);
     output.push('');
 
     // Warning for non-hazardous asteroids
@@ -199,9 +193,7 @@ export class AsteroidDeflectorGame {
 
   private showHelp(): string[] {
     return [
-      '\x1b[33m╔══════════════════════════════════════════════════════════════╗\x1b[0m',
-      '\x1b[33m║\x1b[0m                    \x1b[32mDEFLECTION COMMANDS\x1b[0m                    \x1b[33m║\x1b[0m',
-      '\x1b[33m╚══════════════════════════════════════════════════════════════╝\x1b[0m',
+      '\x1b[32mDEFLECTION COMMANDS\x1b[0m',
       '',
       '\x1b[32m[ASTEROID ANALYSIS]\x1b[0m',
       '  \x1b[35mstatus\x1b[0m     - Show current asteroid status and orbital data',
@@ -242,16 +234,14 @@ export class AsteroidDeflectorGame {
 
     const output = [
       '\x1b[36m[CURRENT TARGET STATUS]\x1b[0m',
-      '┌─────────────────────────────────────────────────────────────┐',
-      '│ \x1b[33mName:\x1b[0m ' + asteroid.name.padEnd(50) + ' │',
-      '│ \x1b[33mID:\x1b[0m ' + asteroid.id.padEnd(52) + ' │',
-      '│ \x1b[33mSize:\x1b[0m ' + diameter.toFixed(2) + ' km diameter'.padEnd(45) + ' │',
-      '│ \x1b[33mVelocity:\x1b[0m ' + velocity.toFixed(1) + ' km/s'.padEnd(46) + ' │',
-      '│ \x1b[33mMiss Distance:\x1b[0m ' + missDistance.toFixed(3) + ' AU'.padEnd(42) + ' │',
-      '│ \x1b[33mApproach Date:\x1b[0m ' + approachDate.padEnd(40) + ' │',
-      '│ \x1b[33mThreat Level:\x1b[0m ' + threatColor + threatLevel + '\x1b[0m'.padEnd(40) + ' │',
-      '│ \x1b[33mHazardous:\x1b[0m ' + (asteroid.is_potentially_hazardous_asteroid ? 'YES' : 'NO').padEnd(45) + ' │',
-      '└─────────────────────────────────────────────────────────────┘',
+      `\x1b[33m>>\x1b[0m Name: ${asteroid.name}`,
+      `\x1b[33m>>\x1b[0m ID: ${asteroid.id}`,
+      `\x1b[33m>>\x1b[0m Size: ${diameter.toFixed(2)} km diameter`,
+      `\x1b[33m>>\x1b[0m Velocity: ${velocity.toFixed(1)} km/s`,
+      `\x1b[33m>>\x1b[0m Miss Distance: ${missDistance.toFixed(3)} AU`,
+      `\x1b[33m>>\x1b[0m Approach Date: ${approachDate}`,
+      `\x1b[33m>>\x1b[0m Threat Level: ${threatColor}${threatLevel}\x1b[0m`,
+      `\x1b[33m>>\x1b[0m Hazardous: ${asteroid.is_potentially_hazardous_asteroid ? 'YES' : 'NO'}`,
       '',
       '\x1b[32m[SYSTEM STATUS]\x1b[0m',
       '  Attempts: ' + this.gameState.deflectionAttempts + '/' + this.gameState.maxAttempts,
@@ -313,21 +303,18 @@ export class AsteroidDeflectorGame {
     const output: string[] = [];
     
     output.push('\x1b[36m[AVAILABLE DEFLECTION METHODS]\x1b[0m');
-    output.push('┌─────────────────────────────────────────────────────────────┐');
     
     this.deflectionMethods.forEach((method, index) => {
       const successPercent = (method.successRate * 100).toFixed(0);
-      output.push('│ \x1b[33m' + (index + 1) + '. ' + method.name + '\x1b[0m'.padEnd(50) + ' │');
-      output.push('│   ' + method.description.padEnd(55) + ' │');
-      output.push('│   Success Rate: ' + successPercent + '%'.padEnd(40) + ' │');
-      output.push('│   Cost: $' + method.cost.toLocaleString() + 'M'.padEnd(42) + ' │');
-      output.push('│   Time: ' + method.timeRequired + ' hours'.padEnd(44) + ' │');
+      output.push(`\x1b[33m>>\x1b[0m ${index + 1}. ${method.name}`);
+      output.push(`    Description: ${method.description}`);
+      output.push(`    Success Rate: ${successPercent}%`);
+      output.push(`    Cost: $${method.cost.toLocaleString()}M`);
+      output.push(`    Time: ${method.timeRequired} hours`);
       if (index < this.deflectionMethods.length - 1) {
-        output.push('├─────────────────────────────────────────────────────────────┤');
+        output.push('');
       }
     });
-    
-    output.push('└─────────────────────────────────────────────────────────────┘');
     output.push('');
     output.push('\x1b[32m[USAGE]\x1b[0m');
     output.push('  \x1b[35mdeflect <method_id>\x1b[0m - Select deflection method');
@@ -630,14 +617,12 @@ export class AsteroidDeflectorGame {
 
     const output = [
       '\x1b[36m[MISSION STATUS]\x1b[0m',
-      '┌─────────────────────────────────────────────────────────────┐',
-      '│ \x1b[33mStatus:\x1b[0m ' + this.gameState.gameStatus.padEnd(45) + ' │',
-      '│ \x1b[33mTarget:\x1b[0m ' + (this.gameState.selectedAsteroid?.name || 'Unknown').padEnd(45) + ' │',
-      '│ \x1b[33mMethod:\x1b[0m ' + (method?.name || 'Unknown').padEnd(45) + ' │',
-      '│ \x1b[33mProgress:\x1b[0m ' + progress.toFixed(1) + '%'.padEnd(40) + ' │',
-      '│ \x1b[33mElapsed:\x1b[0m ' + Math.floor(elapsedTime / 60) + ' minutes'.padEnd(40) + ' │',
-      '│ \x1b[33mRemaining:\x1b[0m ' + Math.max(0, Math.floor((totalTime - elapsedTime) / 60)) + ' minutes'.padEnd(35) + ' │',
-      '└─────────────────────────────────────────────────────────────┘',
+      `\x1b[33m>>\x1b[0m Status: ${this.gameState.gameStatus}`,
+      `\x1b[33m>>\x1b[0m Target: ${this.gameState.selectedAsteroid?.name || 'Unknown'}`,
+      `\x1b[33m>>\x1b[0m Method: ${method?.name || 'Unknown'}`,
+      `\x1b[33m>>\x1b[0m Progress: ${progress.toFixed(1)}%`,
+      `\x1b[33m>>\x1b[0m Elapsed: ${Math.floor(elapsedTime / 60)} minutes`,
+      `\x1b[33m>>\x1b[0m Remaining: ${Math.max(0, Math.floor((totalTime - elapsedTime) / 60))} minutes`,
       ''
     ];
 
