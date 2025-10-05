@@ -26,7 +26,6 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
   useEffect(() => {
     if (!isVisible) {
       setDisplayText('');
-      setIsAnimating(false);
       return;
     }
 
