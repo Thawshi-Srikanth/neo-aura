@@ -96,7 +96,7 @@ export const SimulationSettings = ({
     </div>
   );
 
-  const handleSettingChange = (key: keyof SimulationSettings, value: any) => {
+  const handleSettingChange = (key: keyof SimulationSettings, value: unknown) => {
     const newSettings = { ...localSettings, [key]: value };
     setLocalSettings(newSettings);
     onSettingsChange(newSettings);

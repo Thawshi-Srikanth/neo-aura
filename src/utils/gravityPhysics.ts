@@ -124,7 +124,7 @@ export function updateGravityState(
 
   // RK4 integration
   const calculateAcceleration = (pos: THREE.Vector3) => {
-    let acc = new THREE.Vector3(0, 0, 0);
+    const acc = new THREE.Vector3(0, 0, 0);
 
     if (includeEarthGravity) {
       const distanceToEarth = pos.distanceTo(earthPos);
@@ -184,7 +184,7 @@ export function updateGravityState(
     .add(k4_v)
     .multiplyScalar(1 / 6);
 
-  let newVelocity = state.velocity
+  const newVelocity = state.velocity
     .clone()
     .add(deltaV.multiplyScalar(direction));
 

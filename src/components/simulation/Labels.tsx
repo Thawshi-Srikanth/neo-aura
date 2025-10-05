@@ -18,7 +18,7 @@ export function Labels({
   onDistanceChange?: (distance: number) => void;
 }) {
   const [distance, setDistance] = useState(0);
-  const lineRef = useRef<any>(null);
+  const lineRef = useRef<THREE.Line>(null);
 
   useFrame(() => {
     // Calculate distance between Earth and active asteroid

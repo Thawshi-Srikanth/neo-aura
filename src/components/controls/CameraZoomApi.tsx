@@ -1,7 +1,6 @@
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useCallback, useEffect } from "react";
-
 export interface ZoomApi {
   zoomIn: () => void;
   zoomOut: () => void;
@@ -16,7 +15,7 @@ export default function CameraZoomApi({
   scaleStep = 0.85,
   onReady,
 }: {
-  controlsRef?: React.RefObject<any>;
+  controlsRef?: React.RefObject<{ object: THREE.Camera; update?: () => void }>;
   target?: [number, number, number] | THREE.Vector3;
   minDistance?: number;
   maxDistance?: number;

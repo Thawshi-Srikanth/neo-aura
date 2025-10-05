@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Stars } from "@react-three/drei";
+import { OrbitControls as ThreeOrbitControls, Stars } from "@react-three/drei";
 import * as THREE from "three";
 import { forwardRef, useState } from "react";
 import { Earth } from "./Earth";
@@ -17,61 +17,60 @@ import { Legend } from "./Legend";
 import { SIMULATION_CONSTANTS } from "../../config/simulationConstants";
 import { useSettingsStore } from "../../store/settingsStore";
 import type { CollisionOrbit } from "../../utils/orbitalCollision";
-import type { AsteroidData } from "../../types/asteroid";
+import type { Asteroid as AsteroidType } from "../../types/asteroid";
 
 interface SimulationSceneProps {
   // Asteroid data
-  currentAsteroid: AsteroidData;
-  
-  // Simulation state
+  currentAsteroid: AsteroidType;
+
+  // Simulation state 
   impactPosition: THREE.Vector3 | null;
-  impactData: any;
+  impactData: unknown;
   asteroidVisible: boolean;
   simulationRunning: boolean;
   resetKey: number;
   timeScale: number;
-  
+
   // Display settings
   showOrbits: boolean;
   showIntersections: boolean;
   asteroidSize: number;
-  
+
   // Dual asteroid system
   showOriginalAsteroid: boolean;
   showCollisionAsteroid: boolean;
   collisionOrbit: CollisionOrbit | null;
   originPosition: THREE.Vector3 | null;
   isImpactTrajectorySet: boolean;
-  
+
   // Event handlers
   onImpactAnalyzed: (details: { lat: number; lon: number; isLand: boolean }) => void;
   onImpact: (position: THREE.Vector3) => void;
   onCollisionDetected: () => void;
-  
+
   // Status props for legend
   collisionDetected?: boolean;
   hasImpacted?: boolean;
   isOptimizing?: boolean;
-  
+
   // Refs
   earthRef: React.RefObject<THREE.Mesh>;
   asteroidRef: React.RefObject<THREE.Mesh>;
   collisionAsteroidRef: React.RefObject<THREE.Mesh>;
   sunRef: React.RefObject<THREE.Mesh>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   controlsRef: React.RefObject<any>;
 }
 
 export const SimulationScene = forwardRef<HTMLDivElement, SimulationSceneProps>(({
   currentAsteroid,
   impactPosition,
-  impactData,
   asteroidVisible,
   simulationRunning,
   resetKey,
   timeScale,
   showOrbits,
   showIntersections,
-  asteroidSize,
   showOriginalAsteroid,
   showCollisionAsteroid,
   collisionOrbit,
@@ -91,7 +90,7 @@ export const SimulationScene = forwardRef<HTMLDivElement, SimulationSceneProps>(
 }, ref) => {
   const { settings } = useSettingsStore();
   const [distance, setDistance] = useState(0);
-  
+
   return (
     <div ref={ref} className="absolute inset-0">
       <Canvas
@@ -105,21 +104,21 @@ export const SimulationScene = forwardRef<HTMLDivElement, SimulationSceneProps>(
         dpr={[1, Math.min(2, window.devicePixelRatio || 1)]}
       >
         <ambientLight intensity={settings.ambientIntensity} />
-        <directionalLight 
-          position={SIMULATION_CONSTANTS.LIGHTING.DIRECTIONAL_POSITION} 
-          intensity={settings.directionalIntensity} 
+        <directionalLight
+          position={SIMULATION_CONSTANTS.LIGHTING.DIRECTIONAL_POSITION}
+          intensity={settings.directionalIntensity}
         />
-        <pointLight 
-          position={SIMULATION_CONSTANTS.LIGHTING.POINT_POSITION} 
-          intensity={settings.pointIntensity} 
-          color={SIMULATION_CONSTANTS.LIGHTING.POINT_COLOR} 
+        <pointLight
+          position={SIMULATION_CONSTANTS.LIGHTING.POINT_POSITION}
+          intensity={settings.pointIntensity}
+          color={SIMULATION_CONSTANTS.LIGHTING.POINT_COLOR}
         />
-        <Stars 
-          count={settings.starCount} 
-          fade={SIMULATION_CONSTANTS.STARS.FADE} 
-          radius={settings.starRadius} 
+        <Stars
+          count={settings.starCount}
+          fade={SIMULATION_CONSTANTS.STARS.FADE}
+          radius={settings.starRadius}
         />
-        <OrbitControls
+        <ThreeOrbitControls
           ref={controlsRef}
           maxDistance={SIMULATION_CONSTANTS.ORBIT_CONTROLS.MAX_DISTANCE}
           minDistance={SIMULATION_CONSTANTS.ORBIT_CONTROLS.MIN_DISTANCE}
@@ -174,7 +173,7 @@ export const SimulationScene = forwardRef<HTMLDivElement, SimulationSceneProps>(
             ref={asteroidRef}
             key={`original-asteroid-${resetKey}`}
             orbitalData={currentAsteroid.orbital_data}
-            onImpact={() => {}} // Original asteroid doesn't impact
+            onImpact={() => { }} // Original asteroid doesn't impact
             onCollisionDetected={onCollisionDetected}
             earthRef={earthRef}
             sunRef={sunRef}
@@ -220,9 +219,9 @@ export const SimulationScene = forwardRef<HTMLDivElement, SimulationSceneProps>(
           onDistanceChange={setDistance}
         />
       </Canvas>
-      
+
       {/* Legend */}
-      <Legend 
+      <Legend
         showCollisionAsteroid={showCollisionAsteroid}
         distance={distance}
         asteroidName={currentAsteroid.name}

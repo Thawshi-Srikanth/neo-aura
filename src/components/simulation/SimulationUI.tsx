@@ -13,7 +13,7 @@ import * as THREE from "three";
 
 interface SimulationUIProps {
   // Impact data
-  impactData: any;
+  impactData: unknown;
   currentAsteroid: Asteroid;
 
   // Simulation state
@@ -37,7 +37,7 @@ interface SimulationUIProps {
   onStartSimulation: () => void;
   onResetSimulation: () => void;
   onTimeScaleChange: (scale: number) => void;
-  onOptimizationComplete: (result: any) => void;
+  onOptimizationComplete: (result: unknown) => void;
   onOptimizationCancel: () => void;
   onImpactDataClose: () => void;
   onDeflectionAttempt?: (success: boolean) => void;

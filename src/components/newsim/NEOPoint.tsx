@@ -47,17 +47,6 @@ const NEOPoint: React.FC<NEOPointProps> = ({
     }
   }, [asteroid, time]);
 
-  if (!visible) return null;
-
-  // Handle click interaction - ROUTER SAFE VERSION
-  const handleClick = (event: any) => {
-    // Don't stop propagation to avoid interfering with React Router
-    if (onClick && event.button === 0) {
-      // Only handle left clicks
-      onClick(asteroid, [position[0], position[1], position[2]]);
-    }
-  };
-
   // Animate blinking effect and selection
   useFrame((state) => {
     if (materialRef.current) {
@@ -72,6 +61,17 @@ const NEOPoint: React.FC<NEOPointProps> = ({
       }
     }
   });
+
+  if (!visible) return null;
+
+  // Handle click interaction - ROUTER SAFE VERSION
+  const handleClick = (event: React.MouseEvent) => {
+    // Don't stop propagation to avoid interfering with React Router
+    if (onClick && event.button === 0) {
+      // Only handle left clicks
+      onClick(asteroid, [position[0], position[1], position[2]]);
+    }
+  };
 
   return (
     <mesh

@@ -133,7 +133,7 @@ export const TerminalInterface: React.FC<TerminalInterfaceProps> = ({
         resizeObserver.disconnect();
       }
     };
-  }, [isVisible]); // Removed onCommand from dependencies
+  }, [isVisible, onCommand]);
 
   // Cleanup effect
   useEffect(() => {

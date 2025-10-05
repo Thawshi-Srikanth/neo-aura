@@ -9,8 +9,8 @@ interface CollisionOrbitPathProps {
 }
 
 export function CollisionOrbitPath({ collisionOrbit, visible = true }: CollisionOrbitPathProps) {
-  const { orbitPoints, earthOrbitPoints, intersectionPoints } = useMemo(() => {
-    if (!visible) return { orbitPoints: [], earthOrbitPoints: [], intersectionPoints: [] };
+  const { orbitPoints, earthOrbitPoints } = useMemo(() => {
+    if (!visible) return { orbitPoints: [], earthOrbitPoints: [] };
 
     const asteroidPoints: THREE.Vector3[] = [];
     const earthPoints: THREE.Vector3[] = [];
@@ -42,8 +42,7 @@ export function CollisionOrbitPath({ collisionOrbit, visible = true }: Collision
 
     return {
       orbitPoints: asteroidPoints,
-      earthOrbitPoints: earthPoints,
-      intersectionPoints: intersections
+      earthOrbitPoints: earthPoints
     };
   }, [collisionOrbit, visible]);
 

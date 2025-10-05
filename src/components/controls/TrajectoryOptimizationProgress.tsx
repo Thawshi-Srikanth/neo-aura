@@ -3,7 +3,7 @@ import { Loader2, CheckCircle, AlertCircle, Target } from 'lucide-react';
 
 interface TrajectoryOptimizationProgressProps {
   isVisible: boolean;
-  onComplete: (result: any) => void;
+  onComplete: (result: unknown) => void;
   onCancel: () => void;
 }
 
@@ -14,7 +14,7 @@ const TrajectoryOptimizationProgress: React.FC<TrajectoryOptimizationProgressPro
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<unknown>(null);
 
   const steps = [
     {

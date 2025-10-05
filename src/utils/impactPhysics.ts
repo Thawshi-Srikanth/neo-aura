@@ -59,9 +59,11 @@ export function energyToTNT(energyJoules: number): number {
  */
 export function calculateCraterSize(
   energy: number,
-  density: number = 3000,
+  _density = 3000,
   angle: number = 45
 ): { diameter: number; depth: number } {
+  // Suppress unused parameter warning
+  void _density;
   // Energy in megatons
   const energyMT = energyToTNT(energy);
   

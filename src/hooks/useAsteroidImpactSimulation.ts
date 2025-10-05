@@ -53,7 +53,7 @@ export interface AsteroidImpactSimulationActions {
   // Simulation actions
   handleStartSimulation: () => void;
   handleReset: () => void;
-  handleOptimizationComplete: (result: any) => void;
+  handleOptimizationComplete: (result: unknown) => void;
   handleOptimizationCancel: () => void;
   handleImpact: (position: THREE.Vector3) => void;
   handleCollisionDetected: () => void;
@@ -241,7 +241,7 @@ export const useAsteroidImpactSimulation = (asteroidId?: string) => {
   }, [resetSimulation]);
 
   const handleOptimizationComplete = useCallback(
-    (result: any) => {
+    (result: unknown) => {
       setIsOptimizing(false);
 
       // Use optimized impact time

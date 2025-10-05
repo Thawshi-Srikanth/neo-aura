@@ -2,8 +2,14 @@ import { useControls, folder } from 'leva';
 import { useSimulationStore } from '../../store/simulationStore';
 import { useEffect } from 'react';
 
-// Utility to ensure only one Leva folder is open at a time
-const setupSingleDropdownBehavior = () => {
+export default function LevaControls() {
+  const {
+    setSpeed,
+    setTrailThickness,
+    setTrailLength,
+  } = useSimulationStore();
+
+  // Setup single dropdown behavior
   useEffect(() => {
     const handleFolderClick = (event: Event) => {
       const target = event.target as HTMLElement;
@@ -30,17 +36,6 @@ const setupSingleDropdownBehavior = () => {
       document.removeEventListener('click', handleFolderClick);
     };
   }, []);
-};
-
-export default function LevaControls() {
-  const {
-    setSpeed,
-    setTrailThickness,
-    setTrailLength,
-  } = useSimulationStore();
-
-  // Setup single dropdown behavior
-  setupSingleDropdownBehavior();
 
   const { speed, trailThickness, trailLength } = useControls({
     "Simulation": folder({

@@ -18,8 +18,8 @@ const NEODetailPanel: React.FC<NEODetailPanelProps> = ({
   onClose,
   visible,
 }) => {
-  const [impactData, setImpactData] = useState<any>(null);
-  const [currentPositions, setCurrentPositions] = useState<any>(null);
+  const [impactData, setImpactData] = useState<unknown>(null);
+  const [currentPositions, setCurrentPositions] = useState<unknown>(null);
 
   useEffect(() => {
     if (!visible || !asteroid) return;

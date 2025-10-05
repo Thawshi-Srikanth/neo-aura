@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useRef, useMemo, useState } from "react";
 import { useFrame, useThree, extend } from "@react-three/fiber";
 import * as THREE from "three";
