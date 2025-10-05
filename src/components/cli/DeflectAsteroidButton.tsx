@@ -3,10 +3,12 @@ import { TerminalInterface } from './TerminalInterface';
 
 interface DeflectAsteroidButtonProps {
   onDeflectionAttempt?: (success: boolean) => void;
+  asteroidId?: string;
 }
 
 export const DeflectAsteroidButton: React.FC<DeflectAsteroidButtonProps> = ({
-  onDeflectionAttempt
+  onDeflectionAttempt,
+  asteroidId
 }) => {
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
 
@@ -43,6 +45,7 @@ export const DeflectAsteroidButton: React.FC<DeflectAsteroidButtonProps> = ({
           onCommand={handleCommand}
           isVisible={isTerminalOpen}
           onClose={handleCloseTerminal}
+          asteroidId={asteroidId}
         />
       )}
     </>
