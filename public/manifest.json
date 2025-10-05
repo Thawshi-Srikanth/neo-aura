@@ -1,0 +1,26 @@
+{
+  "name": "Neo-Aura: Asteroid Impact Simulation",
+  "short_name": "Neo-Aura",
+  "description": "Advanced asteroid impact simulation and NEO visualization platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "landscape-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32 48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["science", "education", "simulation"],
+  "lang": "en",
+  "scope": "/",
+  "id": "neo-aura-app"
+}
