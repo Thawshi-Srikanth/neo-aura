@@ -6,9 +6,11 @@ import { Badge } from '../ui/badge';
 import { AsteroidWireframe3D } from '../visualizations/AsteroidWireframe3D';
 import { asteroidData } from '../../data/asteroids';
 import type { Asteroid } from '../../types/asteroid';
+import { useNavigation } from '../../contexts/NavigationContext';
 
 export default function Dashboard() {
     const navigate = useNavigate();
+    const { startNavigation } = useNavigation();
     const [selectedAsteroidIndex, setSelectedAsteroidIndex] = useState(-1);
 
     const handleAsteroidSelect = (_asteroid: Asteroid, index: number) => {
@@ -17,8 +19,9 @@ export default function Dashboard() {
 
 
     const handleEnterPress = (asteroid: Asteroid) => {
-        console.log('handleEnterPress called with asteroid:', asteroid.name, 'ID:', asteroid.id);
-        console.log('Navigating to:', `/impact-simulation/${asteroid.id}`);
+        console.log('🎯 handleEnterPress called with asteroid:', asteroid.name, 'ID:', asteroid.id);
+        console.log('🎯 Navigating to:', `/impact-simulation/${asteroid.id}`);
+        startNavigation('Loading Impact Simulation');
         navigate(`/impact-simulation/${asteroid.id}`);
     };
 
@@ -64,7 +67,10 @@ export default function Dashboard() {
                                                 <Card
                                                     key={asteroid.id}
                                                     className="bg-black cursor-pointer group aspect-square relative overflow-hidden"
-                                                    onClick={() => navigate(`/impact-simulation/${asteroid.id}`)}
+                                                    onClick={() => {
+                                                        startNavigation('Loading Impact Simulation');
+                                                        navigate(`/impact-simulation/${asteroid.id}`);
+                                                    }}
                                                 >
                                                    <CardContent className="p-0 h-full flex flex-col relative">
                                                        {/* 3D Wireframe Asteroid Visualization */}
@@ -87,6 +93,7 @@ export default function Dashboard() {
                                                                className="bg-white text-black px-4 py-2 rounded-full font-medium text-sm hover:bg-gray-200 transition-colors flex items-center space-x-2 cursor-pointer"
                                                                onClick={(e) => {
                                                                    e.stopPropagation();
+                                                                   startNavigation('Loading Impact Simulation');
                                                                    navigate(`/impact-simulation/${asteroid.id}`);
                                                                }}
                                                            >
@@ -203,7 +210,10 @@ export default function Dashboard() {
                                              
                                              <div className="text-center space-y-2">
                                                  <button
-                                                     onClick={() => navigate('/orbital-visualization')}
+                                                     onClick={() => {
+                                                         startNavigation('Loading Orbital Visualization');
+                                                         navigate('/orbital-visualization');
+                                                     }}
                                                      className="w-full px-4 py-2 bg-white text-black font-medium rounded hover:bg-gray-200 transition-colors text-xs cursor-pointer"
                                                  >
                                                      Launch Orbital View
