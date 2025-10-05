@@ -185,11 +185,7 @@ const ImpactSim = () => {
     console.log(`Selected NEO: ${asteroid.name}`);
   };
 
-  // This callback is now optional since data is managed by Zustand
-  const handleAsteroidsLoaded = (loadedAsteroids: Asteroid[]) => {
-    // Data is already in the store, this is just for backward compatibility
-    console.log(`Loaded ${loadedAsteroids.length} asteroids into store`);
-  };
+  // Removed handleAsteroidsLoaded - data is now managed by Zustand store
 
   return (
     <div className="relative w-full h-screen bg-black overflow-hidden">
@@ -243,7 +239,6 @@ const ImpactSim = () => {
           maxNEOs={neoSettings.maxNEOs}
           currentTime={currentTime}
           onNEOClick={handleNEOClick}
-          onAsteroidsLoaded={handleAsteroidsLoaded}
         />
 
         <OrbitControls

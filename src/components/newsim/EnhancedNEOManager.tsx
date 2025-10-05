@@ -159,12 +159,23 @@ const EnhancedNEOManager: React.FC<EnhancedNEOManagerProps> = ({
     }
   }, [performanceMode]);
 
-  // Notify parent when asteroids are loaded
+  // Track if asteroids have been loaded to prevent repeated calls
+  const hasNotifiedRef = React.useRef(false);
+  const lastAsteroidCountRef = React.useRef(0);
+
+  // Notify parent when asteroids are loaded (only once per data change)
   useEffect(() => {
-    if (asteroids.length > 0 && onAsteroidsLoaded) {
+    if (
+      asteroids.length > 0 &&
+      onAsteroidsLoaded &&
+      (!hasNotifiedRef.current ||
+        asteroids.length !== lastAsteroidCountRef.current)
+    ) {
       onAsteroidsLoaded(asteroids);
+      hasNotifiedRef.current = true;
+      lastAsteroidCountRef.current = asteroids.length;
     }
-  }, [asteroids, onAsteroidsLoaded]);
+  }, [asteroids.length]); // Only depend on length, not the callback function
 
   // Performance monitoring can be added here if needed
 

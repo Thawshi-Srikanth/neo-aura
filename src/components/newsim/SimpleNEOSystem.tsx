@@ -154,12 +154,12 @@ const SimpleNEOSystem: React.FC<SimpleNEOSystemProps> = ({
       setAsteroids(filteredAsteroids);
       setError(null);
 
-      // Keep backward compatibility with callback prop
+      // Keep backward compatibility with callback prop (only call once per data change)
       if (onAsteroidsLoaded) {
         onAsteroidsLoaded(filteredAsteroids);
       }
     }
-  }, [data, maxNEOs, onAsteroidsLoaded, setAsteroids, setError]);
+  }, [data, maxNEOs, setAsteroids, setError]); // Removed onAsteroidsLoaded from dependencies
 
   // Color-blind friendly bright colors for orbital paths in space
   const orbitColors = [
