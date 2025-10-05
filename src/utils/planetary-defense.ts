@@ -95,8 +95,8 @@ function calculateEvacuationRadius(energy: number): number {
  * Estimate affected population (simplified)
  */
 function estimateAffectedPopulation(
-  lat: number,
-  lon: number,
+  _lat: number,
+  _lon: number,
   radius: number
 ): number {
   // Very simplified population density estimation
@@ -110,7 +110,7 @@ function estimateAffectedPopulation(
  * Generate mitigation options based on threat level and time to impact
  */
 function generateMitigationOptions(
-  threatLevel: ThreatLevel,
+  _threatLevel: ThreatLevel,
   timeToImpact: number,
   diameter: number
 ): string[] {

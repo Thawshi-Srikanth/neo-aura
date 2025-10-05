@@ -125,9 +125,9 @@ export function TrajectoryTrail({
   }, [finalPoint, maxPoints]);
 
   return (
-    <line ref={lineRef}>
+    <line ref={lineRef as any}>
       {/* geometry is set imperatively */}
-      <bufferGeometry ref={geometryRef as unknown as React.MutableRefObject<THREE.BufferGeometry>} />
+      <bufferGeometry ref={geometryRef as any} />
       <lineBasicMaterial 
         color="#ff3300" 
         linewidth={3}

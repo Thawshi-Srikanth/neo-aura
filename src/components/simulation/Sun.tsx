@@ -3,7 +3,7 @@ import { useRef, forwardRef, useImperativeHandle, useState } from "react";
 import * as THREE from "three";
 import { SUN_VISUAL_RADIUS } from "../../config/constants";
 
-export const Sun = forwardRef((props: object, ref) => {
+export const Sun = forwardRef((_, ref) => {
   const meshRef = useRef<THREE.Mesh>(null!);
   const { camera, size } = useThree();
   const [showLabel, setShowLabel] = useState(false);

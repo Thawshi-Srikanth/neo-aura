@@ -57,7 +57,7 @@ export const IntersectionPoints = forwardRef<THREE.Group, IntersectionPointsProp
     }, [asteroidOrbitalData, maxSearchDays]);
 
     // Animate intersection points
-    useFrame((state, delta) => {
+    useFrame((_, delta) => {
       if (!isVisible || !groupRef.current) return;
 
       intersectionPoints.current.forEach(point => {

@@ -18,8 +18,8 @@ const NEODetailPanel: React.FC<NEODetailPanelProps> = ({
   onClose,
   visible,
 }) => {
-  const [impactData, setImpactData] = useState<unknown>(null);
-  const [currentPositions, setCurrentPositions] = useState<unknown>(null);
+  const [impactData, setImpactData] = useState<any>(null);
+  const [currentPositions, setCurrentPositions] = useState<any>(null);
 
   useEffect(() => {
     if (!visible || !asteroid) return;
@@ -206,11 +206,11 @@ const NEODetailPanel: React.FC<NEODetailPanelProps> = ({
               <div className="text-xs space-y-1">
                 <div>
                   <span className="text-gray-400">Distance from Earth:</span>{" "}
-                  {formatNumber(currentPositions.distanceKm, 0)} km
+                  {formatNumber((currentPositions as any).distanceKm, 0)} km
                 </div>
                 <div>
                   <span className="text-gray-400">Distance in AU:</span>{" "}
-                  {formatNumber(currentPositions.distance, 4)} AU
+                  {formatNumber((currentPositions as any).distance, 4)} AU
                 </div>
               </div>
             </div>
@@ -226,27 +226,27 @@ const NEODetailPanel: React.FC<NEODetailPanelProps> = ({
               <div className="text-xs space-y-1">
                 <div>
                   <span className="text-gray-400">Closest Approach:</span>{" "}
-                  {timeToDate(impactData.time).toLocaleDateString()}
+                  {timeToDate((impactData as any).time).toLocaleDateString()}
                 </div>
                 <div>
                   <span className="text-gray-400">Minimum Distance:</span>{" "}
-                  {formatNumber(impactData.distance * 149597870.7, 0)} km
+                  {formatNumber((impactData as any).distance * 149597870.7, 0)} km
                 </div>
                 <div>
                   <span className="text-gray-400">Impact Probability:</span>{" "}
                   <span
                     className={
-                      impactData.impactProbability > 0.1
+                      (impactData as any).impactProbability > 0.1
                         ? "text-red-400"
-                        : impactData.impactProbability > 0.01
+                        : (impactData as any).impactProbability > 0.01
                         ? "text-yellow-400"
                         : "text-green-400"
                     }
                   >
-                    {(impactData.impactProbability * 100).toFixed(6)}%
+                    {((impactData as any).impactProbability * 100).toFixed(6)}%
                   </span>
                 </div>
-                {impactData.impactLocation && (
+                {(impactData as any).impactLocation && (
                   <div className="bg-red-900 bg-opacity-50 p-2 rounded mt-2">
                     <div className="flex items-center gap-1 text-red-300 mb-1">
                       <Clock size={12} />
@@ -256,12 +256,12 @@ const NEODetailPanel: React.FC<NEODetailPanelProps> = ({
                     </div>
                     <div>
                       <span className="text-gray-400">Impact Date:</span>{" "}
-                      {timeToDate(impactData.time).toLocaleString()}
+                      {timeToDate((impactData as any).time).toLocaleString()}
                     </div>
                     <div>
                       <span className="text-gray-400">Impact Location:</span>{" "}
-                      {formatNumber(impactData.impactLocation.lat, 2)}°N,{" "}
-                      {formatNumber(impactData.impactLocation.lon, 2)}°E
+                      {formatNumber((impactData as any).impactLocation.lat, 2)}°N,{" "}
+                      {formatNumber((impactData as any).impactLocation.lon, 2)}°E
                     </div>
                   </div>
                 )}

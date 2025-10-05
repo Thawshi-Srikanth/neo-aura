@@ -245,7 +245,7 @@ export const useAsteroidImpactSimulation = (asteroidId?: string) => {
       setIsOptimizing(false);
 
       // Use optimized impact time
-      const impactTime = result.impactTime || SIMULATION_CONSTANTS.DEFAULT_IMPACT_TIME;
+      const impactTime = (result as any).impactTime || SIMULATION_CONSTANTS.DEFAULT_IMPACT_TIME;
       setImpactCountdownSeconds(impactTime);
 
       setIsImpactTrajectorySet(true);

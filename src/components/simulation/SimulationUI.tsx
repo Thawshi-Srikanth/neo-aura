@@ -75,7 +75,7 @@ export const SimulationUI = ({
       />
 
       {/* Impact Map */}
-      <ImpactMap impactData={impactData} />
+      <ImpactMap impactData={impactData as any} />
 
       {/* Trajectory Optimization Progress */}
       <TrajectoryOptimizationProgress
@@ -117,9 +117,9 @@ export const SimulationUI = ({
         )}
 
       {/* Impact Analysis Panel */}
-      {impactData && impactData.physics && (
+      {impactData && (impactData as any).physics && (
         <ImpactAnalysisPanel
-          impactData={impactData}
+          impactData={impactData as any}
           asteroid={currentAsteroid}
           onClose={onImpactDataClose}
         />

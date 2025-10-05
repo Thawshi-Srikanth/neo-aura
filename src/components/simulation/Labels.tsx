@@ -33,15 +33,19 @@ export function Labels({
       onDistanceChange?.(realWorldDist);
 
       if (lineRef.current) {
-        lineRef.current.geometry.setPositions([
+        const positions = [
           earthP.x,
           earthP.y,
           earthP.z,
           asteroidP.x,
           asteroidP.y,
           asteroidP.z,
-        ]);
-        lineRef.current.geometry.attributes.position.needsUpdate = true;
+        ];
+        const positionAttribute = lineRef.current.geometry.getAttribute('position');
+        if (positionAttribute && 'set' in positionAttribute) {
+          (positionAttribute as any).set(positions);
+          positionAttribute.needsUpdate = true;
+        }
       }
     }
   });
@@ -51,7 +55,7 @@ export function Labels({
       {/* Distance Line */}
       {distance > 0 && (
         <Line
-          ref={lineRef}
+          ref={lineRef as any}
           points={[
             [0, 0, 0],
             [0, 0, 0],
