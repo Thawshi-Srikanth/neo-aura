@@ -114,13 +114,14 @@ const ImpactSim = () => {
   } | null>(null);
   const [neoSettings, setNeoSettings] = useState<NEOSettings>({
     showNEOs: true,
+    showOrbits: true,
     showSun: true,
     showEarth: true,
     showEarthOrbit: true,
     neoColor: "#03FF92",
     neoSize: 0.0015,
     blinkSpeed: 2.0,
-    maxNEOs: 100, // Increased for performance testing with InstancedMesh
+    maxNEOs: 4, // Reduced for better visibility of orbital paths
     speedMultiplier: 10,
   });
 
@@ -221,9 +222,10 @@ const ImpactSim = () => {
           />
         )}
 
-        {/* Simple NEO System - Clean NEO Points Only */}
+        {/* Simple NEO System - Clean NEO Points and Orbital Paths */}
         <SimpleNEOSystem
           showNEOs={neoSettings.showNEOs}
+          showOrbits={neoSettings.showOrbits}
           neoColor={neoSettings.neoColor}
           neoSize={neoSettings.neoSize}
           blinkSpeed={neoSettings.blinkSpeed}

@@ -7,6 +7,7 @@ interface NEOControlsProps {
 
 export interface NEOSettings {
   showNEOs: boolean;
+  showOrbits: boolean;
   showSun: boolean;
   showEarth: boolean;
   showEarthOrbit: boolean;
@@ -27,13 +28,14 @@ const NEOControls: React.FC<NEOControlsProps> = ({
   const [activeTab, setActiveTab] = useState<TabType>("visibility");
   const [settings, setSettings] = useState<NEOSettings>({
     showNEOs: true,
+    showOrbits: true,
     showSun: true,
     showEarth: true,
     showEarthOrbit: true,
     neoColor: "#ffff00",
     neoSize: 0.005,
     blinkSpeed: 1.0,
-    maxNEOs: 20,
+    maxNEOs: 4,
     speedMultiplier: 10,
   });
 
@@ -66,6 +68,15 @@ const NEOControls: React.FC<NEOControlsProps> = ({
                 className="rounded"
               />
               <span>Show NEOs</span>
+            </label>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={settings.showOrbits}
+                onChange={(e) => updateSetting("showOrbits", e.target.checked)}
+                className="rounded"
+              />
+              <span>Show NEO Orbital Paths</span>
             </label>
             <label className="flex items-center space-x-2">
               <input

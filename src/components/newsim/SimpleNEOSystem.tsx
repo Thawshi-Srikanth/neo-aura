@@ -4,6 +4,7 @@ import * as THREE from "three";
 import useSWR from "swr";
 import { fetcher, getAsteroidsUrl } from "../../api/asteroidApi";
 import { getAsteroidPosition } from "../../utils/orbital-calculations";
+import NEOOrbitPath from "./NEOOrbitPath";
 import type { Asteroid } from "../../types/asteroid";
 
 interface SimpleNEOPointProps {
@@ -37,7 +38,18 @@ const SimpleNEOPoint: React.FC<SimpleNEOPointProps> = ({
       const [x, y, z] = getAsteroidPosition(currentTime, asteroid.orbital_data);
       // Scale factor: 2.0 units = 1 AU (same scale as Earth's orbit)
       const scale = 2.0;
-      const worldPos = new THREE.Vector3(x * scale, z * scale, y * scale);
+      // Proper coordinate mapping: X=X, Y=inclination(up/down), Z=Z(depth)
+      const worldPos = new THREE.Vector3(x * scale, y * scale, z * scale);
+
+      // Debug: Log inclination for first few NEOs
+      if (Math.random() < 0.01) {
+        // Only log occasionally to avoid spam
+        console.log(
+          `NEO ${asteroid.name}: Inclination = ${
+            asteroid.orbital_data.inclination
+          }°, Y-position = ${(y * scale).toFixed(3)}`
+        );
+      }
 
       meshRef.current.position.copy(worldPos);
       meshRef.current.visible = true;
@@ -90,7 +102,7 @@ const SimpleNEOPoint: React.FC<SimpleNEOPointProps> = ({
         transparent
         opacity={1.0}
         emissive={neoColor}
-        emissiveIntensity={0.2}
+        emissiveIntensity={1}
         roughness={0.8}
         metalness={0.1}
       />
@@ -100,6 +112,7 @@ const SimpleNEOPoint: React.FC<SimpleNEOPointProps> = ({
 
 interface SimpleNEOSystemProps {
   showNEOs?: boolean;
+  showOrbits?: boolean;
   neoColor?: string;
   neoSize?: number;
   blinkSpeed?: number;
@@ -110,6 +123,7 @@ interface SimpleNEOSystemProps {
 
 const SimpleNEOSystem: React.FC<SimpleNEOSystemProps> = ({
   showNEOs = true,
+  showOrbits = false,
   neoColor = "#ffff00",
   neoSize = 0.005,
   blinkSpeed = 1.0,
@@ -141,12 +155,34 @@ const SimpleNEOSystem: React.FC<SimpleNEOSystemProps> = ({
     }
   }, [data, maxNEOs]);
 
-  if (isLoading || !asteroids.length || !showNEOs) {
+  // Color-blind friendly bright colors for orbital paths in space
+  const orbitColors = [
+    "#00FFFF", // Cyan - very bright and visible
+    "#FF6B00", // Orange - excellent contrast in space
+    "#00FF41", // Bright Green - high visibility
+    "#FF0080", // Magenta - stands out in dark space
+  ];
+
+  if (isLoading || !asteroids.length || (!showNEOs && !showOrbits)) {
     return null;
   }
 
   return (
     <group>
+      {/* NEO Orbital Paths - Dotted lines showing full orbits */}
+      {showOrbits &&
+        asteroids.map((asteroid, index) => (
+          <NEOOrbitPath
+            key={`orbit-${asteroid.id}`}
+            asteroid={asteroid}
+            visible={true}
+            color={orbitColors[index % orbitColors.length]}
+            opacity={0.8}
+            segments={100}
+            scale={2.0}
+          />
+        ))}
+
       {/* NEO Points - Show all points */}
       {showNEOs &&
         asteroids.map((asteroid) => (
