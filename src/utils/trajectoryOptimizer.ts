@@ -36,26 +36,26 @@ export function analyzeOptimalTrajectory(
   const distanceToSun = asteroidPos.distanceTo(sunPos);
   const _distanceToEarth = asteroidPos.distanceTo(earthPos);
   void _distanceToEarth;
-  
+
   // Check if asteroid is too close to Sun (dangerous zone)
   const sunDangerZone = 2.0; // units
   const isInDangerZone = distanceToSun < sunDangerZone;
-  
+
   if (isInDangerZone) {
     // If too close to Sun, find a trajectory that moves away first
     return findEscapeTrajectory(asteroidPos, earthPos, sunPos);
   }
-  
+
   // Calculate optimal approach angle
   const earthToAsteroid = asteroidPos.clone().sub(earthPos);
   const sunToAsteroid = asteroidPos.clone().sub(sunPos);
-  
+
   // Find angle that avoids Sun while approaching Earth
   const approachAngle = calculateOptimalApproachAngle(
     earthToAsteroid,
     sunToAsteroid
   );
-  
+
   // Generate smooth trajectory points
   const trajectoryPoints = generateSmoothTrajectory(
     asteroidPos,
@@ -63,21 +63,20 @@ export function analyzeOptimalTrajectory(
     approachAngle,
     20 // number of trajectory points
   );
-  
+
   // Calculate estimated impact time
-  const impactTime = estimateImpactTime(asteroidPos, earthPos, trajectoryPoints);
-  
+  const impactTime = estimateImpactTime(trajectoryPoints);
+
   // Check if trajectory avoids Sun
   const sunAvoidance = checkSunAvoidance(trajectoryPoints, sunPos);
-  
+
   // Calculate confidence based on trajectory quality
   const confidence = calculateTrajectoryConfidence(
     trajectoryPoints,
     earthPos,
-    sunPos,
     sunAvoidance
   );
-  
+
   return {
     success: true,
     optimalTrajectory: trajectoryPoints,
@@ -98,18 +97,18 @@ function findEscapeTrajectory(
 ): TrajectoryOptimizationResult {
   // Calculate direction away from Sun
   const awayFromSun = asteroidPos.clone().sub(sunPos).normalize();
-  
+
   // Find a point that's safe distance from Sun
   const safeDistance = 3.0;
   const escapePoint = sunPos.clone().add(awayFromSun.multiplyScalar(safeDistance));
-  
+
   // Generate trajectory that goes to escape point first, then to Earth
   const trajectoryPoints = [
     asteroidPos.clone(),
     escapePoint,
     earthPos.clone()
   ];
-  
+
   return {
     success: true,
     optimalTrajectory: trajectoryPoints,
@@ -130,11 +129,11 @@ function calculateOptimalApproachAngle(
   // Find perpendicular direction to Sun-Asteroid line
   const sunDirection = sunToAsteroid.normalize();
   const earthDirection = earthToAsteroid.normalize();
-  
+
   // Calculate angle that avoids Sun while approaching Earth
   const dotProduct = sunDirection.dot(earthDirection);
   const angle = Math.acos(Math.abs(dotProduct));
-  
+
   // Prefer angles between 30-60 degrees for smooth approach
   return Math.max(30, Math.min(60, angle * 180 / Math.PI));
 }
@@ -143,19 +142,19 @@ function calculateOptimalApproachAngle(
  * Generate smooth trajectory points
  */
 function generateSmoothTrajectory(
-  start: THREE.Vector3,
-  end: THREE.Vector3,
-  approachAngle: number,
+  _start: THREE.Vector3,
+  _end: THREE.Vector3,
+  _approachAngle: number,
   numPoints: number
 ): THREE.Vector3[] {
   const points: THREE.Vector3[] = [];
-  
+
   for (let i = 0; i <= numPoints; i++) {
     const t = i / numPoints;
-    
+
     // Create smooth curve using cubic interpolation
     const smoothT = t * t * (3 - 2 * t); // Smooth step function
-    
+
     // Add some curvature to avoid direct line
     const curvature = Math.sin(t * Math.PI) * 0.5;
     const offset = new THREE.Vector3(
@@ -163,11 +162,11 @@ function generateSmoothTrajectory(
       Math.sin(t * Math.PI * 2) * curvature,
       0
     );
-    
-    const point = start.clone().lerp(end, smoothT).add(offset);
+
+    const point = _start.clone().lerp(_end, smoothT).add(offset);
     points.push(point);
   }
-  
+
   return points;
 }
 
@@ -175,8 +174,6 @@ function generateSmoothTrajectory(
  * Estimate impact time based on trajectory
  */
 function estimateImpactTime(
-  start: THREE.Vector3,
-  end: THREE.Vector3,
   trajectory: THREE.Vector3[]
 ): number {
   // Calculate total distance
@@ -184,10 +181,10 @@ function estimateImpactTime(
   for (let i = 1; i < trajectory.length; i++) {
     totalDistance += trajectory[i].distanceTo(trajectory[i - 1]);
   }
-  
+
   // Estimate speed (moderate orbital speed)
   const estimatedSpeed = 1.0; // units per second
-  
+
   return totalDistance / estimatedSpeed;
 }
 
@@ -199,14 +196,14 @@ function checkSunAvoidance(
   sunPos: THREE.Vector3
 ): boolean {
   const minSafeDistance = 1.5; // Minimum safe distance from Sun
-  
+
   for (const point of trajectory) {
     const distanceToSun = point.distanceTo(sunPos);
     if (distanceToSun < minSafeDistance) {
       return false;
     }
   }
-  
+
   return true;
 }
 
@@ -216,29 +213,28 @@ function checkSunAvoidance(
 function calculateTrajectoryConfidence(
   trajectory: THREE.Vector3[],
   earthPos: THREE.Vector3,
-  sunPos: THREE.Vector3,
   sunAvoidance: boolean
 ): number {
   let confidence = 0.5; // Base confidence
-  
+
   // Bonus for Sun avoidance
   if (sunAvoidance) {
     confidence += 0.3;
   }
-  
+
   // Bonus for smooth trajectory (not too many sharp turns)
   const smoothness = calculateTrajectorySmoothness(trajectory);
   confidence += smoothness * 0.2;
-  
+
   // Penalty if trajectory is too long
   const totalLength = calculateTrajectoryLength(trajectory);
   const optimalLength = earthPos.distanceTo(trajectory[0]);
   const lengthRatio = totalLength / optimalLength;
-  
+
   if (lengthRatio > 2.0) {
     confidence -= 0.2;
   }
-  
+
   return Math.max(0, Math.min(1, confidence));
 }
 
@@ -247,26 +243,26 @@ function calculateTrajectoryConfidence(
  */
 function calculateTrajectorySmoothness(trajectory: THREE.Vector3[]): number {
   if (trajectory.length < 3) return 1.0;
-  
+
   let totalAngleChange = 0;
   let segmentCount = 0;
-  
+
   for (let i = 1; i < trajectory.length - 1; i++) {
     const prev = trajectory[i - 1];
     const curr = trajectory[i];
     const next = trajectory[i + 1];
-    
+
     const v1 = curr.clone().sub(prev).normalize();
     const v2 = next.clone().sub(curr).normalize();
-    
+
     const angle = Math.acos(Math.max(-1, Math.min(1, v1.dot(v2))));
     totalAngleChange += angle;
     segmentCount++;
   }
-  
+
   const avgAngleChange = totalAngleChange / segmentCount;
   const smoothness = Math.max(0, 1 - (avgAngleChange / Math.PI));
-  
+
   return smoothness;
 }
 

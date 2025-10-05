@@ -14,7 +14,7 @@ const TrajectoryOptimizationProgress: React.FC<TrajectoryOptimizationProgressPro
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
-  const [result, setResult] = useState<unknown>(null);
+  const [result, setResult] = useState<any>(null);
 
   const steps = [
     {
@@ -58,7 +58,7 @@ const TrajectoryOptimizationProgress: React.FC<TrajectoryOptimizationProgressPro
     }
 
     let stepIndex = 0;
-    const timeouts: NodeJS.Timeout[] = [];
+    const timeouts: number[] = [];
 
     const runStep = () => {
       if (stepIndex < steps.length) {
@@ -144,9 +144,9 @@ const TrajectoryOptimizationProgress: React.FC<TrajectoryOptimizationProgressPro
             </p>
             {isComplete && result && (
               <div className="text-xs text-slate-400 mt-1">
-                Confidence: {Math.round(result.confidence * 100)}% • 
-                Impact Time: {result.impactTime}s • 
-                Sun Safe: {result.sunAvoidance ? "Yes" : "No"}
+                Confidence: {Math.round((result as any).confidence * 100)}% • 
+                Impact Time: {(result as any).impactTime}s • 
+                Sun Safe: {(result as any).sunAvoidance ? "Yes" : "No"}
               </div>
             )}
           </div>

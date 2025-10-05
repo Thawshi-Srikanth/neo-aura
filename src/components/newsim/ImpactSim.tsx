@@ -1,7 +1,7 @@
 import { OrbitControls, Stars } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef, useState } from "react";
-import { OrbitControls as ThreeOrbitControls } from "three/examples/jsm/controls/OrbitControls";
+// import { OrbitControls as ThreeOrbitControls } from "@react-three/drei";
 
 import NEOManager from "./NEOManager";
 import NEOControls, { type NEOSettings } from "./NEOControls";
@@ -69,7 +69,7 @@ const TimeController = ({
 };
 
 const ImpactSim = () => {
-  const controlsRef = useRef<ThreeOrbitControls>(null);
+  const controlsRef = useRef<any>(null);
 
   // Get current time as initial reference
   const getCurrentTime = () => {
