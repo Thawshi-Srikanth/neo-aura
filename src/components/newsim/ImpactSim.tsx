@@ -2,7 +2,8 @@ import { OrbitControls, Stars } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef, useState, useMemo } from "react";
 
-import NEOManager from "./NEOManager";
+import NEOManagerWithData from "./NEOManagerWithData";
+import SimpleNEOSystem from "./SimpleNEOSystem";
 import NEOControls, { type NEOSettings } from "./NEOControls";
 import Sun from "./Sun";
 import EarthOrbit from "./EarthOrbit";
@@ -124,7 +125,7 @@ const ImpactSim = () => {
     trailColor: "#61FAFA",
     trailLength: 50,
     trailOpacity: 0.6,
-    maxNEOs: 20,
+    maxNEOs: 100, // Increased for performance testing with InstancedMesh
     speedMultiplier: 10,
   });
 
@@ -228,21 +229,19 @@ const ImpactSim = () => {
           />
         )}
 
-        {/* Original NEO Manager - working version */}
-        <NEOManager
-          showTrails={neoSettings.showTrails}
+        {/* Simple NEO System - Navigation Compatible with Controlled Trails */}
+        <SimpleNEOSystem
           showNEOs={neoSettings.showNEOs}
+          showTrails={neoSettings.showTrails}
           neoColor={neoSettings.neoColor}
           neoSize={neoSettings.neoSize}
           blinkSpeed={neoSettings.blinkSpeed}
           trailColor={neoSettings.trailColor}
-          trailLength={Math.min(neoSettings.trailLength, 30)}
-          trailOpacity={neoSettings.trailOpacity}
-          maxNEOs={Math.min(neoSettings.maxNEOs, 10)}
+          trailLength={Math.min(neoSettings.trailLength, 20)} // Max 20 for readability
+          trailOpacity={Math.min(neoSettings.trailOpacity, 0.4)} // Max 0.4 for subtle trails
+          pointsPerTrail={15} // Reduced from 50 to 15
+          maxNEOs={Math.min(neoSettings.maxNEOs, 10)} // Reduce NEOs to 10 for less clutter
           currentTime={currentTime}
-          onNEOClick={handleNEOClick}
-          selectedNEOId={selectedNEO?.asteroid.id || null}
-          onAsteroidsLoaded={handleAsteroidsLoaded}
         />
 
         {/* Debug overlay in 3D space (optional) */}

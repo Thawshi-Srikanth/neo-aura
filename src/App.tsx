@@ -32,7 +32,7 @@ function MainScene() {
   return (
     <div className="relative w-full h-full bg-black">
       <Leva {...levaConfig} />
-      <LevaControls />
+      {/* <LevaControls /> */}
 
       {/* SpaceX-style Header */}
       <div className="absolute top-6 left-6 z-10">
