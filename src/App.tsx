@@ -10,6 +10,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AsteroidImpactSimulation from "./components/views/AsteroidImpactSimulation";
 import BottomBar from "./components/BottomBar";
 import "./styles/leva-horizontal.css";
+import { ThemeProvider } from "./components/theme-provider";
 import { Suspense } from "react";
 import ImpactSim from "./components/newsim/ImpactSim";
 
@@ -49,8 +50,8 @@ function MainScene() {
               {isLoading
                 ? "Loading..."
                 : isReachingEnd
-                ? "No More Asteroids"
-                : "Load More Asteroids"}
+                  ? "No More Asteroids"
+                  : "Load More Asteroids"}
             </button>
             {isError && (
               <div className="status-indicator status-danger">
@@ -121,6 +122,7 @@ function MainScene() {
 
 export default function App() {
   return (
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
     <Router>
       <div className="w-full h-screen">
         <Routes>
@@ -158,5 +160,6 @@ export default function App() {
         <BottomBar />
       </div>
     </Router>
+</ThemeProvider>
   );
 }

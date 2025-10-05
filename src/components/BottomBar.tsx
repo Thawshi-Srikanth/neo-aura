@@ -42,6 +42,7 @@ const BottomBar = () => {
         >
           <span className="uppercase tracking-wider">Impact Sim 2</span>
         </NavLink>
+
       </div>
     </nav>
   );

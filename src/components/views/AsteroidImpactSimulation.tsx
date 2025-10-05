@@ -93,6 +93,21 @@ export default function AsteroidImpactSimulation() {
     actions.setTimeScale(1.0);
   };
 
+  // Handle deflection attempt
+  const handleDeflectionAttempt = (success: boolean) => {
+    if (success) {
+      // Deflection successful - stop the simulation
+      simulationActions.setSimulationRunning(false);
+      actions.setIsImpactTrajectorySet(false);
+      actions.setImpactCountdownSeconds(null);
+      // Show success message or effect
+      console.log('Asteroid successfully deflected!');
+    } else {
+      // Deflection failed - continue with impact
+      console.log('Deflection failed - impact imminent!');
+    }
+  };
+
   return (
     <div className="relative w-full h-screen bg-black overflow-hidden">
       {/* Simulation UI Components */}
@@ -116,6 +131,7 @@ export default function AsteroidImpactSimulation() {
         onOptimizationComplete={handleOptimizationComplete}
         onOptimizationCancel={actions.handleOptimizationCancel}
         onImpactDataClose={() => simulationActions.setImpactData(null)}
+        onDeflectionAttempt={handleDeflectionAttempt}
       />
 
       {/* 3D Simulation Scene */}

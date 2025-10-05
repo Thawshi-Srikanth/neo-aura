@@ -1,0 +1,102 @@
+/* Terminal specific styles for react-terminal-ui */
+.terminal-container {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  background-color: #0a0a0a;
+  color: #00ff00;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+}
+
+/* Ensure terminal takes full height */
+.terminal {
+  height: 100% !important;
+  min-height: 500px !important;
+  width: 100% !important;
+  min-width: 700px !important;
+}
+
+/* Terminal content area */
+.terminal-content {
+  height: 100% !important;
+  min-height: 500px !important;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar for terminal */
+.terminal-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.terminal-container::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+.terminal-container::-webkit-scrollbar-thumb {
+  background: #00ff00;
+  border-radius: 4px;
+}
+
+.terminal-container::-webkit-scrollbar-thumb:hover {
+  background: #00cc00;
+}
+
+/* Terminal input styling */
+.terminal-input {
+  background-color: transparent;
+  border: none;
+  color: #00ff00;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+}
+
+.terminal-input:focus {
+  outline: none;
+}
+
+/* Terminal output styling */
+.terminal-output {
+  color: #00ff00;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  line-height: 1.2;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Terminal prompt styling */
+.terminal-prompt {
+  color: #00ff00;
+  font-weight: bold;
+}
+
+/* Terminal command styling */
+.terminal-command {
+  color: #00ff00;
+  font-weight: normal;
+}
+
+/* Terminal error styling */
+.terminal-error {
+  color: #ff0000;
+}
+
+/* Terminal success styling */
+.terminal-success {
+  color: #00ff00;
+}
+
+/* Terminal warning styling */
+.terminal-warning {
+  color: #ffff00;
+}
+
+/* Terminal info styling */
+.terminal-info {
+  color: #00ffff;
+}

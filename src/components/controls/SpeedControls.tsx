@@ -88,34 +88,7 @@ const SpeedControls: React.FC<SpeedControlsProps> = ({
     setIsPlaying(true);
   }, [onTimeScaleChange]);
 
-  // Keyboard shortcuts
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (!isVisible) return;
-
-      switch (e.code) {
-        case 'Space':
-          e.preventDefault();
-          handlePlayPause();
-          break;
-        case 'ArrowLeft':
-          e.preventDefault();
-          handlePreviousSpeed();
-          break;
-        case 'ArrowRight':
-          e.preventDefault();
-          handleNextSpeed();
-          break;
-        case 'KeyR':
-          e.preventDefault();
-          handleReset();
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [isVisible, handlePlayPause, handlePreviousSpeed, handleNextSpeed, handleReset]);
+  // Keyboard shortcuts removed to prevent conflicts with terminal input
 
   if (!isVisible) return null;
 
@@ -236,6 +209,23 @@ const SpeedControls: React.FC<SpeedControlsProps> = ({
 
             >
               <RotateCcw className="w-4 h-4" />
+            </Button>
+          </ButtonGroup>
+
+          {/* Deflect Asteroid Button - Always Visible */}
+          <ButtonGroup>
+            <Button
+              onClick={() => {
+                // This will be handled by the DeflectAsteroidButton component
+                // We need to trigger the terminal opening
+                const event = new CustomEvent('openDeflectTerminal');
+                window.dispatchEvent(event);
+              }}
+              variant="destructive"
+              size="sm"
+              className="gap-2"
+            >
+              🚨 Deflect Asteroid
             </Button>
           </ButtonGroup>
 
