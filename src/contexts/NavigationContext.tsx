@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import type { ReactNode } from 'react';
 import LoadingScreen from '../components/LoadingScreen';
 
 interface NavigationContextType {
@@ -27,13 +28,11 @@ export const NavigationProvider: React.FC<NavigationProviderProps> = ({ children
   const [loadingMessage, setLoadingMessage] = useState('');
 
   const startNavigation = (message: string) => {
-    console.log('🚀 Starting navigation:', message);
     setIsNavigating(true);
     setLoadingMessage(message);
   };
 
   const endNavigation = () => {
-    console.log('✅ Ending navigation');
     setIsNavigating(false);
   };
 
