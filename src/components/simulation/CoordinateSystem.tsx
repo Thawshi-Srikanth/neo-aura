@@ -5,6 +5,11 @@ import { useSettingsStore } from "../../store/settingsStore";
 
 export const CoordinateSystem = () => {
   const { settings } = useSettingsStore();
+  
+  if (!settings.showAxis) {
+    return null;
+  }
+  
   return (
     <>
       {/* Ecliptic Plane Grid */}

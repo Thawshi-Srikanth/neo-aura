@@ -140,8 +140,6 @@ export default function AsteroidImpactSimulation() {
         impactData={simulationState.impactData}
         currentAsteroid={currentAsteroid}
         isImpactTrajectorySet={state.isImpactTrajectorySet}
-        impactCountdownSeconds={state.impactCountdownSeconds}
-        collisionDetected={state.collisionDetected}
         isOptimizing={state.isOptimizing}
         hasImpacted={state.hasImpacted}
         showLoadingScreen={state.showLoadingScreen}

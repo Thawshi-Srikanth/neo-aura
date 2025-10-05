@@ -8,6 +8,7 @@ const defaultSettings: SimulationSettings = {
   showOrbits: true,
   showIntersections: false,
   showLabels: true,
+  showAxis: true,
   
   // Camera settings
   cameraFov: 45,
@@ -55,7 +56,7 @@ interface SettingsState {
 
 export const useSettingsStore = create<SettingsState>()(
   persist(
-    (set) => ({
+    (set,) => ({
       settings: defaultSettings,
       setSettings: (settings) => set({ settings }),
       updateSetting: (key, value) =>
@@ -66,6 +67,19 @@ export const useSettingsStore = create<SettingsState>()(
     }),
     {
       name: 'simulation-settings',
+      migrate: (persistedState: any, _version: number) => {
+        // Migrate old settings to include new properties
+        if (persistedState && persistedState.settings) {
+          return {
+            ...persistedState,
+            settings: {
+              ...defaultSettings,
+              ...persistedState.settings,
+            }
+          };
+        }
+        return persistedState;
+      },
     }
   )
 );

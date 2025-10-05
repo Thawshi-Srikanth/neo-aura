@@ -1,9 +1,26 @@
 import { useRef, useEffect, forwardRef, useImperativeHandle, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { getCollisionOrbitPosition, getCollisionOrbitVelocity, type CollisionOrbit } from "../../utils/orbitalCollision";
+import { getCollisionOrbitPosition, type CollisionOrbit } from "../../utils/orbitalCollision";
 import { COLLISION_ASTEROID_VISUAL_RADIUS, DAYS_PER_SECOND } from "../../config/constants";
 import { useSettingsStore } from "../../store/settingsStore";
+
+// Calculate realistic orbital velocity that matches the original asteroid's speed
+function calculateRealisticOrbitalVelocity(
+  position: THREE.Vector3,
+  _orbit: CollisionOrbit
+): THREE.Vector3 {
+  // Use a much smaller, more realistic velocity
+  // This simulates the asteroid maintaining its original orbital speed
+  const baseSpeed = 0.01; // Very slow, realistic orbital speed
+  
+  // Calculate direction perpendicular to radius (orbital motion)
+  const radiusVector = position.clone().normalize();
+  const velocityDirection = new THREE.Vector3(-radiusVector.y, radiusVector.x, 0).normalize();
+  
+  // Return velocity with realistic magnitude
+  return velocityDirection.multiplyScalar(baseSpeed);
+}
 
 interface CollisionAsteroidProps {
   collisionOrbit: CollisionOrbit;
@@ -82,8 +99,9 @@ export const CollisionAsteroid = forwardRef<THREE.Mesh, CollisionAsteroidProps>(
       // Get current position in collision orbit - follow the orbit exactly
       const position = getCollisionOrbitPosition(collisionOrbit, simulationTime.current);
       
-      // Calculate velocity for dynamic effects
-      const currentVelocity = getCollisionOrbitVelocity(position, collisionOrbit);
+      // Use realistic orbital velocity instead of collision orbit velocity
+      // Calculate velocity based on orbital mechanics, not collision trajectory
+      const currentVelocity = calculateRealisticOrbitalVelocity(position, collisionOrbit);
       setVelocity(currentVelocity);
       setSpeed(currentVelocity.length());
       

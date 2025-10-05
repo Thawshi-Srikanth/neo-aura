@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -32,6 +32,7 @@ export interface SimulationSettings {
   showOrbits: boolean;
   showIntersections: boolean;
   showLabels: boolean;
+  showAxis: boolean;
 
   // Camera settings
   cameraFov: number;
@@ -80,6 +81,11 @@ export const SimulationSettings = ({
 }: SimulationSettingsProps) => {
   const [localSettings, setLocalSettings] = useState<SimulationSettings>(settings);
   const [openSection, setOpenSection] = useState<string>("display");
+
+  // Sync local settings when props change
+  useEffect(() => {
+    setLocalSettings(settings);
+  }, [settings]);
 
   // Helper function to create tooltip labels
   const createTooltipLabel = (label: string, tooltip: string) => (
@@ -178,6 +184,22 @@ export const SimulationSettings = ({
                   />
                   <label htmlFor="show-labels" className="text-sm">
                     Show object labels
+                  </label>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                {createTooltipLabel("Show Axis", "Toggle visibility of coordinate system axes (X, Y, Z) and grid in the 3D scene.")}
+                <div className="flex items-center space-x-2">
+                  <input
+                    id="show-axis"
+                    type="checkbox"
+                    checked={localSettings.showAxis ?? true}
+                    onChange={(e) => handleSettingChange('showAxis', e.target.checked)}
+                    className="rounded border-gray-300"
+                  />
+                  <label htmlFor="show-axis" className="text-sm">
+                    Show coordinate axes
                   </label>
                 </div>
               </div>

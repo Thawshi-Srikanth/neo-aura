@@ -117,67 +117,14 @@ export const useAsteroidImpactSimulation = (asteroidId?: string) => {
     },
   } = useSimulationState();
 
-  // Live countdown timer - updates based on time scale
+  // Handle collision detection with alert
   useEffect(() => {
-    if (
-      !isImpactTrajectorySet ||
-      impactPosition ||
-      impactCountdownSeconds === null
-    ) {
-      timerStateRef.current = null;
-      return;
+    if (collisionDetected && !hasImpacted) {
+      // Show impact alert
+      alert("🚨 IMPACT DETECTED! 🚨\n\nThe asteroid has collided with Earth!");
+      setHasImpacted(true);
     }
-
-    // Initialize timer state if not already set
-    if (!timerStateRef.current) {
-      timerStateRef.current = {
-        startTime: Date.now(),
-        baseDuration: impactCountdownSeconds,
-        accumulatedTime: 0,
-        lastTimeScale: timeScale,
-      };
-    }
-
-    const timer = setInterval(() => {
-      if (!timerStateRef.current) return;
-
-      const currentTime = Date.now();
-      const realElapsed =
-        (currentTime - timerStateRef.current.startTime) / 1000;
-
-      // Calculate total simulation time elapsed
-      let totalElapsed = timerStateRef.current.accumulatedTime;
-
-      // If time scale changed, add the time that passed with the old scale
-      if (timeScale !== timerStateRef.current.lastTimeScale) {
-        const timeWithOldScale =
-          realElapsed * timerStateRef.current.lastTimeScale;
-        totalElapsed += timeWithOldScale;
-
-        // Reset for new time scale
-        timerStateRef.current.accumulatedTime = totalElapsed;
-        timerStateRef.current.startTime = currentTime;
-        timerStateRef.current.lastTimeScale = timeScale;
-      } else {
-        // Normal case: add current elapsed time
-        totalElapsed += realElapsed * timeScale;
-      }
-
-      const remaining = Math.max(
-        0,
-        timerStateRef.current.baseDuration - totalElapsed
-      );
-
-      setImpactCountdownSeconds(remaining);
-
-      if (remaining <= 0) {
-        clearInterval(timer);
-        timerStateRef.current = null;
-      }
-    }, SIMULATION_CONSTANTS.TIMER_UPDATE_INTERVAL); // Update based on constant
-
-    return () => clearInterval(timer);
-  }, [isImpactTrajectorySet, impactPosition, timeScale]);
+  }, [collisionDetected, hasImpacted]);
 
   // Update simulation time for mini view
   useEffect(() => {
@@ -211,8 +158,6 @@ export const useAsteroidImpactSimulation = (asteroidId?: string) => {
         setShowCollisionAsteroid(true);
         setShowOriginalAsteroid(true);
 
-        // Set impact countdown
-        setImpactCountdownSeconds(newCollisionOrbit.collisionTime);
         setIsImpactTrajectorySet(true);
         setSimulationRunning(true);
         setAsteroidVisible(true);
