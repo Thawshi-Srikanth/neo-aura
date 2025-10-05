@@ -4,7 +4,7 @@ import * as THREE from "three";
 import { findAllOrbitalIntersections } from "../../utils/orbitalCollision";
 
 interface IntersectionPointsProps {
-  asteroidOrbitalData: any;
+  asteroidOrbitalData: unknown;
   maxSearchDays?: number;
   isVisible?: boolean;
 }

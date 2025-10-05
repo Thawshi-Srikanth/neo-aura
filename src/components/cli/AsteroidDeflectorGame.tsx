@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 
 export interface Player {
   id: string;

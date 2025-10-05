@@ -12,7 +12,7 @@ interface Energy3DProps {
 const EnergyMesh: React.FC<{ 
   kineticEnergy: number; 
   tntEquivalent: number;
-}> = ({ kineticEnergy, tntEquivalent }) => {
+}> = () => {
   const energyRef = useRef<THREE.Mesh>(null);
   const waveRefs = useRef<THREE.Mesh[]>([]);
   

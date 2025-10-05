@@ -88,7 +88,7 @@ export function TrajectoryTrail({
       }
 
       const posAttr = geometryRef.current.getAttribute("position");
-      // @ts-expect-error
+      // @ts-expect-error - Direct array assignment for performance
       posAttr.array = positionsRef.current;
       posAttr.needsUpdate = true;
       geometryRef.current.setDrawRange(0, Math.min(countRef.current, maxPoints));
@@ -116,7 +116,7 @@ export function TrajectoryTrail({
           positionsRef.current[i + 2] = finalPoint.z;
         }
         const posAttr = geometryRef.current.getAttribute("position");
-        // @ts-expect-error
+        // @ts-expect-error - Direct array assignment for performance
         posAttr.array = positionsRef.current;
         posAttr.needsUpdate = true;
         geometryRef.current.setDrawRange(0, Math.min(countRef.current, maxPoints));

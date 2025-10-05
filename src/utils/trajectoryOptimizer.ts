@@ -29,11 +29,13 @@ export function analyzeOptimalTrajectory(
   asteroidPos: THREE.Vector3,
   earthPos: THREE.Vector3,
   sunPos: THREE.Vector3,
-  orbitalData: AsteroidOrbitalData
+  _orbitalData: AsteroidOrbitalData
 ): TrajectoryOptimizationResult {
+  void _orbitalData;
   // Calculate distance to Sun to avoid slingshot effects
   const distanceToSun = asteroidPos.distanceTo(sunPos);
-  const distanceToEarth = asteroidPos.distanceTo(earthPos);
+  const _distanceToEarth = asteroidPos.distanceTo(earthPos);
+  void _distanceToEarth;
   
   // Check if asteroid is too close to Sun (dangerous zone)
   const sunDangerZone = 2.0; // units

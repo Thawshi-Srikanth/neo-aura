@@ -70,7 +70,6 @@ const formatLargeNumber = (value: number, unit: string = ''): string => {
 export const ImpactAnalysisPanel: React.FC<ImpactAnalysisPanelProps> = ({
   impactData,
   asteroid,
-  onClose,
 }) => {
   if (!impactData) return null;
   if (!impactData.physics) return null;

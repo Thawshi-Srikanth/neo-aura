@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useRef } from "react";
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { useAsteroidImpactSimulation } from "../../hooks/useAsteroidImpactSimulation";
 import { SimulationScene } from "../simulation/SimulationScene";
 import { SimulationUI } from "../simulation/SimulationUI";
@@ -17,7 +18,7 @@ export default function AsteroidImpactSimulation() {
   const asteroidRef = useRef<THREE.Mesh>(null!);
   const collisionAsteroidRef = useRef<THREE.Mesh>(null!);
   const sunRef = useRef<THREE.Mesh>(null!);
-  const controlsRef = useRef<any>(null);
+  const controlsRef = useRef<OrbitControls>(null);
 
   // Use the organized simulation hook
   const {
@@ -60,7 +61,7 @@ export default function AsteroidImpactSimulation() {
   };
 
   // Enhanced optimization complete handler
-  const handleOptimizationComplete = (result: any) => {
+  const handleOptimizationComplete = (result: unknown) => {
       // Get asteroid's CURRENT rendered position (this is the actual origin point)
       let astPos: THREE.Vector3;
       if (asteroidRef.current) {

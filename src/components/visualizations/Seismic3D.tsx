@@ -12,7 +12,7 @@ interface Seismic3DProps {
 const SeismicMesh: React.FC<{ 
   magnitude: number; 
   epicenterRadius: number;
-}> = ({ magnitude, epicenterRadius }) => {
+}> = () => {
   const earthRef = useRef<THREE.Mesh>(null);
   const waveRefs = useRef<THREE.Mesh[]>([]);
   
