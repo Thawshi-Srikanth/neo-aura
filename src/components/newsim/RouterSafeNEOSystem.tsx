@@ -24,7 +24,6 @@ const NEOPoint: React.FC<NEOPointProps> = ({
   neoSize,
   blinkSpeed,
   isSelected,
-  onNEOClick,
   maxRenderDistance,
   lodDistance,
 }) => {

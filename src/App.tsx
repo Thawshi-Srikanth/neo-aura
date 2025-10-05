@@ -1,7 +1,6 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import Earth from "./components/Earth";
-import LevaControls from "./components/controls/LevaControls";
 import { Leva } from "leva";
 import InstancedAsteroidOrbit from "./components/InstancedAstroidOrbit";
 import Stars from "./components/Starts";

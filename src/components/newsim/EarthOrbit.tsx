@@ -54,7 +54,7 @@ const EarthOrbit: React.FC<EarthOrbitProps> = ({
       earthRef.current.position.set(
         Math.cos(angle) * orbitRadius,
         0,
-        Math.sin(angle) * orbitRadius
+        -Math.sin(angle) * orbitRadius
       );
       lastAppliedTimeRef.current = currentTime;
     } catch (error) {
@@ -72,7 +72,7 @@ const EarthOrbit: React.FC<EarthOrbitProps> = ({
 
       const angle = currentTime * orbitSpeed;
       const targetX = Math.cos(angle) * orbitRadius;
-      const targetZ = Math.sin(angle) * orbitRadius;
+      const targetZ = -Math.sin(angle) * orbitRadius;
 
       // Smoothly interpolate to reduce sudden jumps if UI time is coarse
       earthRef.current.position.x = THREE.MathUtils.lerp(
