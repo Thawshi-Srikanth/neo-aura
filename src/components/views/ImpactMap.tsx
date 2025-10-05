@@ -221,8 +221,6 @@ export default function ImpactMap({ impactData }: ImpactMapProps) {
           className="w-full h-full"
           scrollWheelZoom={true}
           zoomControl={true}
-          minZoom={8}
-          maxZoom={15}
         >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
