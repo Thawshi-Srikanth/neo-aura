@@ -38,7 +38,7 @@ const NEOControls: React.FC<NEOControlsProps> = ({
     neoColor: "#ffff00",
     neoSize: 0.005,
     blinkSpeed: 1.0,
-    trailColor: "#ffff00",
+    trailColor: "#61FAFA",
     trailLength: 50,
     trailOpacity: 0.6,
     maxNEOs: 20,
