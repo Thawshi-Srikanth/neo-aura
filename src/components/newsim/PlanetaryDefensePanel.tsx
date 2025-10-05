@@ -12,6 +12,7 @@ import {
   assessMultipleThreat,
   type ImpactAssessment,
 } from "../../utils/planetary-defense";
+import { useAsteroidStore } from "../../store/asteroidStore";
 import type { Asteroid } from "../../types/asteroid";
 
 // Memoized threat item component to prevent unnecessary re-renders
@@ -54,16 +55,16 @@ const ThreatItem = React.memo<{
 ));
 
 interface PlanetaryDefensePanelProps {
-  asteroids: Asteroid[];
   visible: boolean;
   onClose: () => void;
 }
 
 const PlanetaryDefensePanel: React.FC<PlanetaryDefensePanelProps> = ({
-  asteroids,
   visible,
   onClose,
 }) => {
+  // Use Zustand store for asteroid data
+  const { asteroids } = useAsteroidStore();
   const [threatAssessments, setThreatAssessments] = useState<
     ImpactAssessment[]
   >([]);

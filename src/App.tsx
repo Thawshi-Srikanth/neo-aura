@@ -1,3 +1,10 @@
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, Html } from "@react-three/drei";
+import Earth from "./components/Earth";
+import { Leva } from "leva";
+import InstancedAsteroidOrbit from "./components/InstancedAstroidOrbit";
+import Stars from "./components/Starts";
+import { useAsteroidData } from "./hooks/useAsteroidData";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AsteroidImpactSimulation from "./components/views/AsteroidImpactSimulation";
 import Dashboard from "./components/views/Dashboard";

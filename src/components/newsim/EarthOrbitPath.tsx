@@ -37,7 +37,7 @@ const EarthOrbitPath: React.FC<EarthOrbitPathProps> = ({
       color={color}
       transparent
       opacity={opacity}
-      lineWidth={1}
+      lineWidth={3}
     />
   );
 };
