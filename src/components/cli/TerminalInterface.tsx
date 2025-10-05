@@ -1,29 +1,39 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Terminal as XTerm } from 'xterm';
+import { FitAddon } from 'xterm-addon-fit';
+import { WebLinksAddon } from 'xterm-addon-web-links';
 import 'xterm/css/xterm.css';
 import { AsteroidDeflectorGame } from './AsteroidDeflectorGame';
+import { terminalSounds } from './TerminalSoundEffects';
+import './TerminalInterface.css';
 
 interface TerminalInterfaceProps {
   onCommand: (command: string) => void;
   isVisible: boolean;
   onClose: () => void;
+  asteroidId?: string;
 }
 
 export const TerminalInterface: React.FC<TerminalInterfaceProps> = ({
   onCommand,
   isVisible,
   onClose,
+  asteroidId,
 }) => {
   const gameRef = useRef<AsteroidDeflectorGame | null>(null);
   const terminalRef = useRef<HTMLDivElement>(null);
   const xtermRef = useRef<XTerm | null>(null);
+  const fitAddonRef = useRef<FitAddon | null>(null);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [terminalPosition, setTerminalPosition] = useState({ x: 0, y: 0 });
+  const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'connecting'>('connecting');
 
   // Initialize game if not already done
   if (!gameRef.current) {
-    gameRef.current = new AsteroidDeflectorGame();
+    gameRef.current = new AsteroidDeflectorGame(asteroidId);
   }
 
   useEffect(() => {
@@ -31,73 +41,198 @@ export const TerminalInterface: React.FC<TerminalInterfaceProps> = ({
 
     // Only create terminal if it doesn't exist
     if (!xtermRef.current) {
-      // Create xterm instance
+      // Create xterm instance with enhanced theme
       const terminal = new XTerm({
         theme: {
           background: '#0a0a0a',
-          foreground: '#ffffff',
-          cursor: '#ffffff',
+          foreground: '#00ff41',
+          cursor: '#00ff41',
+          cursorAccent: '#0a0a0a',
           black: '#000000',
-          red: '#ff5555',
-          green: '#50fa7b',
-          yellow: '#f1fa8c',
-          blue: '#8be9fd',
-          magenta: '#ff79c6',
-          cyan: '#8be9fd',
+          red: '#ff0040',
+          green: '#00ff41',
+          yellow: '#ffaa00',
+          blue: '#0080ff',
+          magenta: '#ff0080',
+          cyan: '#00ffff',
           white: '#ffffff',
-          brightBlack: '#6272a4',
-          brightRed: '#ff6e6e',
-          brightGreen: '#69ff94',
-          brightYellow: '#ffffa5',
-          brightBlue: '#a4ffff',
-          brightMagenta: '#ff92df',
-          brightCyan: '#a4ffff',
+          brightBlack: '#404040',
+          brightRed: '#ff4040',
+          brightGreen: '#40ff40',
+          brightYellow: '#ffff40',
+          brightBlue: '#4040ff',
+          brightMagenta: '#ff40ff',
+          brightCyan: '#40ffff',
           brightWhite: '#ffffff'
         },
-        fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
-        fontSize: 14,
-        lineHeight: 1.2,
+        fontFamily: '"Fira Code", "JetBrains Mono", "Cascadia Code", Monaco, Menlo, "Ubuntu Mono", monospace',
+        fontSize: 13,
+        lineHeight: 1.3,
         cursorBlink: true,
-        cursorStyle: 'block'
+        cursorStyle: 'block',
+        scrollback: 1000,
+        tabStopWidth: 4
       });
+
+      // Add fit addon for better resizing
+      const fitAddon = new FitAddon();
+      const webLinksAddon = new WebLinksAddon();
+      terminal.loadAddon(fitAddon);
+      terminal.loadAddon(webLinksAddon);
+      fitAddonRef.current = fitAddon;
 
       // Open terminal
       terminal.open(terminalRef.current);
+      
+      // Fit terminal to container
+      setTimeout(() => {
+        if (fitAddonRef.current) {
+          fitAddonRef.current.fit();
+        }
+      }, 100);
 
-      // Set initial content only once
-      terminal.writeln('╔══════════════════════════════════════════════════════════════╗');
-      terminal.writeln('║                    ASTEROID DEFLECTOR v2.0                  ║');
-      terminal.writeln('║                                                              ║');
-      terminal.writeln('║  Welcome to the Asteroid Deflection Command Center!        ║');
-      terminal.writeln('║  Type \'help\' for available commands.                        ║');
-      terminal.writeln('╚══════════════════════════════════════════════════════════════╝');
-      terminal.writeln('');
-      terminal.write('deflector@neo-aura:~$ ');
-
-      // Handle input
-      terminal.onData((data) => {
-        if (data === '\r') { // Enter key
-          const line = terminal.buffer.active.getLine(terminal.buffer.active.cursorY);
-          const command = line?.translateToString().replace('deflector@neo-aura:~$ ', '') || '';
+      // Show initial asteroid status
+      const showInitialStatus = async () => {
+        if (gameRef.current) {
+          const initialStatus = gameRef.current.getInitialStatus();
           
-          if (command.trim()) {
+          for (let i = 0; i < initialStatus.length; i++) {
+            terminal.writeln(initialStatus[i]);
+            await new Promise(resolve => setTimeout(resolve, 50));
+          }
+          
+          terminal.writeln('');
+          terminal.write('\x1b[32mdeflector@neo-aura:\x1b[36m~\x1b[0m$ ');
+          setConnectionStatus('connected');
+          terminalSounds.playStartup();
+        }
+      };
+      
+      showInitialStatus();
+
+      // Simple command buffer approach
+      let commandBuffer = '';
+      let commandHistory: string[] = [];
+      let historyIndex = -1;
+      let isProcessing = false;
+
+      terminal.onData(async (data) => {
+        if (isProcessing) return; // Prevent processing during command execution
+
+        if (data === '\r') { // Enter key
+          // Always create a new line when Enter is pressed
+          terminal.writeln('');
+          
+          if (commandBuffer.trim()) {
+            isProcessing = true;
+            const command = commandBuffer.trim();
+            console.log('Executing command:', command);
+            
+            // Add to history
+            commandHistory.unshift(command);
+            if (commandHistory.length > 50) commandHistory.pop();
+            historyIndex = -1;
+
+            // Play command sound
+            terminalSounds.playCommand();
+            
             // Process the command through the game
             if (gameRef.current) {
-              const output = gameRef.current.handleCommand(command);
-              output.forEach(line => terminal.writeln(line));
+              const output = await gameRef.current.handleCommand(command);
+              
+              // Handle clear command specially
+              if (command === 'clear') {
+                terminal.clear();
+                terminalSounds.playSuccess();
+              } else {
+                // Add output lines immediately
+                output.forEach((line) => {
+                  terminal.writeln(line);
+                });
+                
+                // Play appropriate sound based on command
+                setTimeout(() => {
+                  if (command.startsWith('deflect')) {
+                    terminalSounds.playDeflection();
+                  } else if (command.startsWith('scan')) {
+                    terminalSounds.playScan();
+                  } else if (command.startsWith('analyze')) {
+                    terminalSounds.playAnalysis();
+                  } else if (command.startsWith('emergency')) {
+                    terminalSounds.playEmergency();
+                  }
+                }, 100);
+              }
             }
             
             // Process the command for external handlers
             onCommand(command);
+
+            // Check if terminal should close (user said 'n' to non-hazardous asteroid)
+            if (gameRef.current && gameRef.current.shouldCloseTerminal()) {
+              setTimeout(() => {
+                onClose();
+              }, 3000); // Close after 3 seconds
+            }
           }
           
-          terminal.write('deflector@neo-aura:~$ ');
+          // Reset command buffer and write new prompt
+          commandBuffer = '';
+          isProcessing = false;
+          
+          // Add a small delay to ensure output is complete
+          setTimeout(() => {
+            // Check if we're waiting for confirmation
+            if (gameRef.current && gameRef.current.isWaitingForConfirmation()) {
+              terminal.write('\x1b[33m[CONFIRM] \x1b[0m');
+            } else {
+              terminal.write('\x1b[32mdeflector@neo-aura:\x1b[36m~\x1b[0m$ ');
+            }
+          }, 50);
+          
         } else if (data === '\u007f') { // Backspace
-          if (terminal.buffer.active.cursorX > 20) { // Don't delete the prompt
+          if (commandBuffer.length > 0) {
+            commandBuffer = commandBuffer.slice(0, -1);
             terminal.write('\b \b');
           }
+        } else if (data === '\u001b[A') { // Up arrow - history
+          if (historyIndex < commandHistory.length - 1) {
+            historyIndex++;
+            const historyCommand = commandHistory[historyIndex];
+            terminal.write('\r\x1b[K');
+            terminal.write('\x1b[32mdeflector@neo-aura:\x1b[36m~\x1b[0m$ ');
+            terminal.write(historyCommand);
+            commandBuffer = historyCommand;
+          }
+        } else if (data === '\u001b[B') { // Down arrow - history
+          if (historyIndex > 0) {
+            historyIndex--;
+            const historyCommand = commandHistory[historyIndex];
+            terminal.write('\r\x1b[K');
+            terminal.write('\x1b[32mdeflector@neo-aura:\x1b[36m~\x1b[0m$ ');
+            terminal.write(historyCommand);
+            commandBuffer = historyCommand;
+          } else if (historyIndex === 0) {
+            historyIndex = -1;
+            terminal.write('\r\x1b[K');
+            terminal.write('\x1b[32mdeflector@neo-aura:\x1b[36m~\x1b[0m$ ');
+            commandBuffer = '';
+          }
+        } else if (data === '\t') { // Tab - autocomplete
+          const suggestions = ['help', 'status', 'deflect', 'confirm', 'cancel', 'clear', 'quit'];
+          const matches = suggestions.filter(cmd => cmd.startsWith(commandBuffer));
+          if (matches.length === 1) {
+            const completion = matches[0].slice(commandBuffer.length);
+            terminal.write(completion);
+            commandBuffer += completion;
+          }
         } else if (data >= ' ') { // Printable characters
-          terminal.write(data);
+          // Only add characters if we're not processing
+          if (!isProcessing) {
+            terminal.write(data);
+            commandBuffer += data;
+            terminalSounds.playTyping();
+          }
         }
       });
 
@@ -149,18 +284,20 @@ export const TerminalInterface: React.FC<TerminalInterfaceProps> = ({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] pointer-events-none flex items-center justify-center"
+      className="terminal-overlay fixed inset-0 z-[9999] pointer-events-none flex items-center justify-center"
       style={{
         position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        zIndex: 9999
+        zIndex: 9999,
+        background: 'rgba(0, 0, 0, 0.8)',
+        backdropFilter: 'blur(4px)'
       }}
     >
       <div
-        className="pointer-events-auto shadow-2xl"
+        className={`terminal-container pointer-events-auto ${isDragging ? 'dragging' : ''}`}
         style={{
           position: 'relative',
           resize: isMaximized ? 'none' : 'both',
@@ -172,92 +309,172 @@ export const TerminalInterface: React.FC<TerminalInterfaceProps> = ({
           maxHeight: '95vh',
           zIndex: 10000,
           backgroundColor: '#0a0a0a',
-          border: '2px solid #4a5568',
-          borderRadius: '8px',
+          border: '2px solid #00ff41',
+          borderRadius: '12px',
           overflow: 'hidden',
-          transition: 'all 0.3s ease'
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: '0 25px 50px -12px rgba(0, 255, 65, 0.25), 0 0 0 1px rgba(0, 255, 65, 0.1)',
+          transform: isDragging ? 'scale(1.02)' : 'scale(1)',
+          left: `${terminalPosition.x}px`,
+          top: `${terminalPosition.y}px`
         }}
         onMouseDown={(e) => {
-          const terminal = e.currentTarget;
-          const startX = e.clientX;
-          const startY = e.clientY;
-          const startLeft = parseInt(terminal.style.left) || 0;
-          const startTop = parseInt(terminal.style.top) || 0;
+          if (e.target === e.currentTarget || (e.target as HTMLElement).closest('.terminal-header')) {
+            setIsDragging(true);
+            const terminal = e.currentTarget;
+            const startX = e.clientX;
+            const startY = e.clientY;
+            const startLeft = terminalPosition.x;
+            const startTop = terminalPosition.y;
 
-          const handleMouseMove = (e: MouseEvent) => {
-            const deltaX = e.clientX - startX;
-            const deltaY = e.clientY - startY;
-            terminal.style.left = `${startLeft + deltaX}px`;
-            terminal.style.top = `${startTop + deltaY}px`;
-          };
+            const handleMouseMove = (e: MouseEvent) => {
+              const deltaX = e.clientX - startX;
+              const deltaY = e.clientY - startY;
+              setTerminalPosition({
+                x: Math.max(0, Math.min(window.innerWidth - terminal.offsetWidth, startLeft + deltaX)),
+                y: Math.max(0, Math.min(window.innerHeight - terminal.offsetHeight, startTop + deltaY))
+              });
+            };
 
-          const handleMouseUp = () => {
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-          };
+            const handleMouseUp = () => {
+              setIsDragging(false);
+              document.removeEventListener('mousemove', handleMouseMove);
+              document.removeEventListener('mouseup', handleMouseUp);
+            };
 
-          document.addEventListener('mousemove', handleMouseMove);
-          document.addEventListener('mouseup', handleMouseUp);
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+          }
         }}
       >
-        {/* Terminal Header */}
+        {/* Enhanced Terminal Header */}
         <div
+          className="terminal-header"
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            padding: '8px 16px',
-            backgroundColor: '#1a1a1a',
-            borderBottom: '1px solid #4a5568',
-            cursor: 'move'
+            padding: '12px 20px',
+            backgroundColor: '#0d1117',
+            borderBottom: '1px solid #00ff41',
+            cursor: 'move',
+            background: 'linear-gradient(135deg, #0d1117 0%, #161b22 100%)'
           }}
         >
-          <div style={{ color: '#ffffff', fontSize: '14px', fontWeight: 'bold' }}>
-            Asteroid Deflector Terminal
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ 
+              width: '8px', 
+              height: '8px', 
+              borderRadius: '50%', 
+              backgroundColor: connectionStatus === 'connected' ? '#00ff41' : connectionStatus === 'connecting' ? '#ffaa00' : '#ff0040',
+              animation: connectionStatus === 'connecting' ? 'pulse 2s infinite' : 'none'
+            }} />
+            <div style={{ color: '#00ff41', fontSize: '14px', fontWeight: 'bold', fontFamily: 'monospace' }}>
+              🛡️ Asteroid Deflector Terminal v3.0
+            </div>
+            <div style={{ 
+              color: connectionStatus === 'connected' ? '#00ff41' : connectionStatus === 'connecting' ? '#ffaa00' : '#ff0040',
+              fontSize: '12px',
+              fontFamily: 'monospace'
+            }}>
+              {connectionStatus === 'connected' ? 'ONLINE' : connectionStatus === 'connecting' ? 'CONNECTING...' : 'OFFLINE'}
+            </div>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
             <button
-              onClick={onClose}
-              style={{
-                width: '12px',
-                height: '12px',
-                borderRadius: '50%',
-                backgroundColor: '#ff5555',
-                border: 'none',
-                cursor: 'pointer'
+              onClick={() => {
+                terminalSounds.playShutdown();
+                onClose();
               }}
-              title="Close"
-            />
+              style={{
+                width: '16px',
+                height: '16px',
+                borderRadius: '50%',
+                backgroundColor: '#ff0040',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 2px 4px rgba(255, 0, 64, 0.3)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.1)';
+                e.currentTarget.style.backgroundColor = '#ff4040';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.backgroundColor = '#ff0040';
+              }}
+              title="Close Terminal"
+            >
+              <span style={{ color: 'white', fontSize: '10px', fontWeight: 'bold' }}>×</span>
+            </button>
             <button
               onClick={() => {
                 setIsMinimized(!isMinimized);
                 if (isMinimized) setIsMaximized(false);
               }}
               style={{
-                width: '12px',
-                height: '12px',
+                width: '16px',
+                height: '16px',
                 borderRadius: '50%',
-                backgroundColor: '#f1fa8c',
+                backgroundColor: '#ffaa00',
                 border: 'none',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 2px 4px rgba(255, 170, 0, 0.3)'
               }}
-              title="Minimize"
-            />
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.1)';
+                e.currentTarget.style.backgroundColor = '#ffcc00';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.backgroundColor = '#ffaa00';
+              }}
+              title={isMinimized ? "Restore Terminal" : "Minimize Terminal"}
+            >
+              <span style={{ color: 'white', fontSize: '10px', fontWeight: 'bold' }}>
+                {isMinimized ? '□' : '−'}
+              </span>
+            </button>
             <button
               onClick={() => {
                 setIsMaximized(!isMaximized);
                 if (isMaximized) setIsMinimized(false);
               }}
               style={{
-                width: '12px',
-                height: '12px',
+                width: '16px',
+                height: '16px',
                 borderRadius: '50%',
-                backgroundColor: '#50fa7b',
+                backgroundColor: '#00ff41',
                 border: 'none',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 2px 4px rgba(0, 255, 65, 0.3)'
               }}
-              title="Maximize"
-            />
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.1)';
+                e.currentTarget.style.backgroundColor = '#40ff40';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.backgroundColor = '#00ff41';
+              }}
+              title={isMaximized ? "Restore Terminal" : "Maximize Terminal"}
+            >
+              <span style={{ color: 'white', fontSize: '10px', fontWeight: 'bold' }}>
+                {isMaximized ? '⧉' : '⧠'}
+              </span>
+            </button>
           </div>
         </div>
         

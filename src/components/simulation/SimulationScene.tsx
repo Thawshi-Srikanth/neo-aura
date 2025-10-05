@@ -4,8 +4,10 @@ import * as THREE from "three";
 import { forwardRef, useState } from "react";
 import { Earth } from "./Earth";
 import { Asteroid } from "./Asteroid";
+import { DeflectedAsteroid } from "./DeflectedAsteroid";
 import { CollisionAsteroid } from "./CollisionAsteroid";
 import { OrbitPath } from "./OrbitPath";
+import { DeflectedOrbitPath } from "./DeflectedOrbitPath";
 import { EarthOrbitPath } from "./EarthOrbitPath";
 import { Sun } from "./Sun";
 import { Labels } from "./Labels";
@@ -48,6 +50,10 @@ interface SimulationSceneProps {
   onImpact: (position: THREE.Vector3) => void;
   onCollisionDetected: () => void;
 
+  // Deflection props
+  isDeflected?: boolean;
+  deflectionResult?: any;
+
   // Status props for legend
   collisionDetected?: boolean;
   hasImpacted?: boolean;
@@ -87,6 +93,8 @@ export const SimulationScene = forwardRef<HTMLDivElement, SimulationSceneProps>(
   collisionAsteroidRef,
   sunRef,
   controlsRef,
+  isDeflected,
+  deflectionResult,
 }, ref) => {
   const { settings } = useSettingsStore();
   const [distance, setDistance] = useState(0);
@@ -150,8 +158,23 @@ export const SimulationScene = forwardRef<HTMLDivElement, SimulationSceneProps>(
           daysPerSecond={1} // This should come from constants
         />
 
-        {/* Asteroid orbit path */}
+        {/* Original asteroid orbit path */}
         {showOrbits && <OrbitPath orbitalData={currentAsteroid.orbital_data} />}
+        
+        {/* Deflected asteroid orbit path (if deflection was successful) */}
+        {showOrbits && isDeflected && deflectionResult && deflectionResult.deflected && deflectionResult.deflected.success && (
+          <DeflectedOrbitPath 
+            orbitalData={{
+              ...currentAsteroid.orbital_data,
+              eccentricity: deflectionResult.deflected.eccentricity.toString(),
+              inclination: deflectionResult.deflected.inclination.toString(),
+              semi_major_axis: deflectionResult.deflected.semiMajorAxis.toString(),
+            }}
+            color="#0088FF" // Blue for deflected path
+            opacity={0.8}
+            lineWidth={2}
+          />
+        )}
 
         {/* Collision orbit path */}
         {showOrbits && collisionOrbit && (
@@ -184,6 +207,25 @@ export const SimulationScene = forwardRef<HTMLDivElement, SimulationSceneProps>(
             isImpacted={false}
             impactPosition={null}
             isOriginalAsteroid={true}
+            isDeflected={isDeflected}
+            deflectionResult={deflectionResult}
+          />
+        )}
+
+        {/* Deflected asteroid - shows deflected trajectory */}
+        {isDeflected && deflectionResult && deflectionResult.deflected && deflectionResult.deflected.success && (
+          <DeflectedAsteroid
+            key={`deflected-asteroid-${resetKey}`}
+            orbitalData={{
+              ...currentAsteroid.orbital_data,
+              eccentricity: deflectionResult.deflected.eccentricity.toString(),
+              inclination: deflectionResult.deflected.inclination.toString(),
+              semi_major_axis: deflectionResult.deflected.semiMajorAxis.toString(),
+            }}
+            earthRef={earthRef}
+            sizeMultiplier={settings.asteroidSize}
+            timeScale={timeScale}
+            isDeflected={true}
           />
         )}
 

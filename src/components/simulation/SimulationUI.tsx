@@ -5,6 +5,7 @@ import TrajectoryOptimizationProgress from "../controls/TrajectoryOptimizationPr
 import SpeedControls from "../controls/SpeedControls";
 import { Mini3DView } from "../Mini3DView";
 import { DeflectAsteroidButton } from "../cli/DeflectAsteroidButton";
+import { useParams } from "react-router-dom";
 import { DAYS_PER_SECOND } from "../../config/constants";
 import { SIMULATION_CONSTANTS } from "../../config/simulationConstants";
 import type { Asteroid } from "../../types/asteroid";
@@ -65,6 +66,7 @@ export const SimulationUI = ({
   onImpactDataClose,
   onDeflectionAttempt,
 }: SimulationUIProps) => {
+  const { asteroidId } = useParams();
   return (
     <>
       {/* Loading Screen */}
@@ -96,7 +98,10 @@ export const SimulationUI = ({
       />
 
       {/* Hidden DeflectAsteroidButton for terminal logic */}
-      <DeflectAsteroidButton onDeflectionAttempt={onDeflectionAttempt} />
+      <DeflectAsteroidButton 
+        onDeflectionAttempt={onDeflectionAttempt} 
+        asteroidId={asteroidId}
+      />
 
 
       {/* Countdown Timer */}

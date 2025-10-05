@@ -18,6 +18,8 @@ export const Asteroid = forwardRef(({
   isImpacted = false,
   impactPosition = null,
   isOriginalAsteroid = false,
+  isDeflected = false,
+  deflectionResult = null,
 }: {
   orbitalData: AsteroidOrbitalData;
   onImpact: (position: THREE.Vector3) => void;
@@ -31,6 +33,8 @@ export const Asteroid = forwardRef(({
   isImpacted?: boolean;
   impactPosition?: THREE.Vector3 | null;
   isOriginalAsteroid?: boolean;
+  isDeflected?: boolean;
+  deflectionResult?: any;
 }, ref) => {
   const meshRef = useRef<THREE.Mesh>(null!);
   const { camera, size } = useThree();
@@ -172,31 +176,47 @@ export const Asteroid = forwardRef(({
       <sphereGeometry args={[ASTEROID_VISUAL_RADIUS * sizeMultiplier, 32, 32]} />
       <meshStandardMaterial
         color={
-          isOriginalAsteroid 
-            ? "#00FF00" // Green for original asteroid
-            : isIntercepting 
-              ? "#FF0000" // Red for deflected asteroid on impact trajectory
-              : "#FFA500" // Orange for deflected asteroid in normal orbit
+          isDeflected && deflectionResult?.success
+            ? "#00FF00" // Green for successful deflection
+            : isDeflected && !deflectionResult?.success
+              ? "#FF0000" // Red for failed deflection
+              : isOriginalAsteroid 
+                ? "#8B4513" // Brown for original asteroid
+                : isIntercepting 
+                  ? "#FF6B35" // Orange for asteroid on impact trajectory
+                  : "#FFA500" // Orange for asteroid in normal orbit
         }
         emissive={
-          isOriginalAsteroid 
-            ? "#00FF00" // Green glow for original
-            : isIntercepting 
-              ? "#FF0000" // Red glow for deflected on impact trajectory
-              : "#FFA500" // Orange glow for deflected in normal orbit
+          isDeflected && deflectionResult?.success
+            ? "#004400" // Dark green glow for successful deflection
+            : isDeflected && !deflectionResult?.success
+              ? "#440000" // Dark red glow for failed deflection
+              : isOriginalAsteroid 
+                ? "#4A2C17" // Brown glow for original
+                : isIntercepting 
+                  ? "#CC3300" // Red glow for impact trajectory
+                  : "#FFA500" // Orange glow for normal orbit
         }
         emissiveIntensity={
-          isOriginalAsteroid 
-            ? 0.3 // Subtle glow for original
-            : isIntercepting 
-              ? 0.5 // Strong glow for deflected on impact trajectory
-              : 0.2 // Weak glow for deflected in normal orbit
+          isDeflected
+            ? 0.8 // Strong glow for deflected asteroids
+            : isOriginalAsteroid 
+              ? 0.3 // Subtle glow for original
+              : isIntercepting 
+                ? 0.5 // Strong glow for impact trajectory
+                : 0.2 // Weak glow for normal orbit
         }
       />
       {showLabel && (
         <Html center sprite position={[0, 0, 0]}>
           <div className="text-white text-center inline-flex flex-col items-center justify-center leading-none m-0 pointer-events-none">
             <img src="/assets/asteroid-icon.svg" alt="Asteroid" className="w-6 h-6 block" />
+            {isDeflected && deflectionResult?.success && (
+              <div className="text-green-400 text-xs font-bold mt-1">DEFLECTED</div>
+            )}
+            {isDeflected && !deflectionResult?.success && (
+              <div className="text-red-400 text-xs font-bold mt-1">DEFLECTION FAILED</div>
+            )}
           </div>
         </Html>
       )}

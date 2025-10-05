@@ -5,18 +5,22 @@ import { getAsteroidPosition } from "../../utils/orbital-calculations";
 import { AU_TO_UNITS } from "../../config/constants";
 import type { AsteroidOrbitalData } from "../../types/asteroid";
 
-export function OrbitPath({
-  orbitalData,
-  color = "#888888",
-  opacity = 1.0,
-}: {
+interface DeflectedOrbitPathProps {
   orbitalData: AsteroidOrbitalData;
   color?: string;
   opacity?: number;
-}) {
+  lineWidth?: number;
+}
+
+export function DeflectedOrbitPath({
+  orbitalData,
+  color = "#0088FF", // Blue color for deflected path
+  opacity = 0.8,
+  lineWidth = 2
+}: DeflectedOrbitPathProps) {
   const points = useMemo(() => {
     const pathPoints = [];
-    const segments = 512; // Reduced for performance
+    const segments = 512; // Number of points for smooth line
     
     // Calculate orbital period in days
     const period = parseFloat(orbitalData.orbital_period);
@@ -29,5 +33,13 @@ export function OrbitPath({
     return pathPoints;
   }, [orbitalData]);
 
-  return <Line points={points} color={color} lineWidth={1} opacity={opacity} />;
+  return (
+    <Line 
+      points={points} 
+      color={color} 
+      lineWidth={lineWidth} 
+      opacity={opacity}
+      dashed={false}
+    />
+  );
 }
