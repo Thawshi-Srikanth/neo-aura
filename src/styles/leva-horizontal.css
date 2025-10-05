@@ -1,0 +1,173 @@
+/* Custom CSS for horizontal Leva controls */
+.leva-c_leva__root {
+  position: fixed !important;
+  top: 20px !important;
+  left: 20px !important;
+  width: auto !important;
+  max-width: 80vw !important;
+  z-index: 1000 !important;
+}
+
+/* Ensure only one folder is open at a time */
+.leva-c_leva__root .leva-c_folder__root {
+  display: inline-flex !important;
+  flex-direction: column !important;
+  margin-right: 8px !important;
+  margin-bottom: 6px !important;
+  padding: 6px !important;
+  background: rgba(26, 26, 26, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 4px !important;
+  backdrop-filter: blur(10px) !important;
+  min-width: 180px !important;
+  max-width: 220px !important;
+  max-height: 250px !important;
+  overflow-y: auto !important;
+}
+
+/* Make folders more compact when collapsed */
+.leva-c_leva__root .leva-c_folder__root.collapsed {
+  max-height: 40px !important;
+  overflow: hidden !important;
+}
+
+/* Make the main container horizontal */
+.leva-c_leva__root .leva-c_leva__root__wrapper {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  align-items: flex-start !important;
+}
+
+/* Style individual control groups */
+.leva-c_leva__root .leva-c_folder__root {
+  display: inline-flex !important;
+  flex-direction: column !important;
+  margin-right: 12px !important;
+  margin-bottom: 8px !important;
+  padding: 8px !important;
+  background: rgba(26, 26, 26, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 6px !important;
+  backdrop-filter: blur(10px) !important;
+  min-width: 200px !important;
+}
+
+/* Style control items within folders */
+.leva-c_leva__root .leva-c_folder__root .leva-c_leva__item {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 4px !important;
+  padding: 4px 0 !important;
+}
+
+/* Style labels */
+.leva-c_leva__root .leva-c_leva__label {
+  margin-right: 8px !important;
+  white-space: nowrap !important;
+  font-size: 11px !important;
+  color: #cccccc !important;
+}
+
+/* Style input controls */
+.leva-c_leva__root input[type="range"],
+.leva-c_leva__root input[type="number"] {
+  width: 80px !important;
+  margin-left: 8px !important;
+}
+
+/* Style buttons */
+.leva-c_leva__root button {
+  padding: 6px 12px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  background: rgba(0, 102, 255, 0.15) !important;
+  border: 1px solid rgba(0, 102, 255, 0.3) !important;
+  border-radius: 3px !important;
+  color: #ffffff !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  margin: 2px 0 !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+
+.leva-c_leva__root button:hover:not(:disabled) {
+  background: rgba(0, 102, 255, 0.3) !important;
+  border-color: rgba(0, 102, 255, 0.5) !important;
+  transform: translateY(-1px) !important;
+}
+
+.leva-c_leva__root button:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  background: rgba(100, 100, 100, 0.1) !important;
+  border-color: rgba(100, 100, 100, 0.2) !important;
+}
+
+/* Style folder headers */
+.leva-c_leva__root .leva-c_folder__title {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+  margin-bottom: 8px !important;
+  padding-bottom: 4px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Make the panel more compact */
+.leva-c_leva__root .leva-c_leva__panel {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Style the main wrapper to be horizontal */
+.leva-c_leva__root .leva-c_leva__wrapper {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  align-items: flex-start !important;
+}
+
+/* Ensure proper spacing for control items */
+.leva-c_leva__root .leva-c_leva__item {
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 2px !important;
+}
+
+/* Style sliders to be more compact */
+.leva-c_leva__root .leva-c_leva__slider {
+  width: 100px !important;
+  margin-left: 8px !important;
+}
+
+/* Style number inputs */
+.leva-c_leva__root .leva-c_leva__number {
+  width: 60px !important;
+  margin-left: 8px !important;
+}
+
+/* JavaScript to ensure only one folder is open at a time */
+.leva-c_leva__root .leva-c_folder__root {
+  transition: max-height 0.3s ease !important;
+}
+
+/* Hide copy buttons */
+.leva-c_leva__root .leva-c_leva__copy {
+  display: none !important;
+}
+
+/* Make the panel more compact overall */
+.leva-c_leva__root .leva-c_leva__panel {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  max-height: 400px !important;
+  overflow-y: auto !important;
+}
