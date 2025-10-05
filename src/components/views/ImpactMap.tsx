@@ -226,10 +226,12 @@ export default function ImpactMap({ impactData }: ImpactMapProps) {
 
       <MapContainer
         center={position}
-        zoom={6}
+        zoom={10}
         className="w-[300px] h-[200px]"
         scrollWheelZoom={true}
         zoomControl={true}
+        minZoom={8}
+        maxZoom={15}
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"

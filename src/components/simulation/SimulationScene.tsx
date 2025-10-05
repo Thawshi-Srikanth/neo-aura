@@ -16,6 +16,7 @@ import { CollisionOrbitPath } from "./CollisionOrbitPath";
 import { IntersectionPoints } from "./IntersectionPoints";
 import { CoordinateSystem } from "./CoordinateSystem";
 import { Legend } from "./Legend";
+import { OrbitLabels } from "./OrbitLabels";
 import { SIMULATION_CONSTANTS } from "../../config/simulationConstants";
 import { useSettingsStore } from "../../store/settingsStore";
 import type { CollisionOrbit } from "../../utils/orbitalCollision";
@@ -260,13 +261,22 @@ export const SimulationScene = forwardRef<HTMLDivElement, SimulationSceneProps>(
           showCollisionAsteroid={showCollisionAsteroid}
           onDistanceChange={setDistance}
         />
+
+        {/* Orbit Labels */}
+        <OrbitLabels
+          currentAsteroid={currentAsteroid}
+          collisionOrbit={collisionOrbit}
+          isDeflected={isDeflected}
+          deflectionResult={deflectionResult}
+          showLabels={settings.showLabels}
+        />
       </Canvas>
 
       {/* Legend */}
       <Legend
         showCollisionAsteroid={showCollisionAsteroid}
-        distance={distance}
         asteroidName={currentAsteroid.name}
+        distance={distance}
         asteroidId={currentAsteroid.id}
         collisionDetected={collisionDetected}
         hasImpacted={hasImpacted}
