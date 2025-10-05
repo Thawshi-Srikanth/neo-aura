@@ -95,6 +95,3 @@ dist
 tmp/
 temp/
 
-# Ignore newsim folder and its contents
-newsim/
-newsim/**

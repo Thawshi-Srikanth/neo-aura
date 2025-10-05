@@ -10,6 +10,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AsteroidImpactSimulation from "./components/views/AsteroidImpactSimulation";
 import BottomBar from "./components/BottomBar";
 import "./styles/leva-horizontal.css";
+import { Suspense } from "react";
+import ImpactSim from "./components/newsim/ImpactSim";
 
 // Configure Leva for horizontal layout
 const levaConfig = {
@@ -134,6 +136,23 @@ export default function App() {
           <Route
             path="/impact-simulation"
             element={<AsteroidImpactSimulation />}
+          />
+          <Route
+            path="/imp-sim"
+            element={
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center h-screen bg-black">
+                    <div className="text-white text-center">
+                      <div className="animate-spin w-8 h-8 border-2 border-white/30 border-t-white rounded-full mx-auto mb-4"></div>
+                      <div>Loading Impact Simulation...</div>
+                    </div>
+                  </div>
+                }
+              >
+                <ImpactSim key="imp-sim-route" />
+              </Suspense>
+            }
           />
         </Routes>
         <BottomBar />
