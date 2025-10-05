@@ -4,6 +4,26 @@
 
 Click on any NEO (yellow blinking point) in the 3D visualization to see detailed information about that Near Earth Object.
 
+## Quick Start Guide
+
+1. **Launch Application**: Run `pnpm dev` and navigate to `/orbital-visualization`
+2. **Find NEOs**: Look for yellow blinking points around the Sun
+3. **Interact**: Click on any NEO to see detailed information
+4. **Customize**: Use the control panel to adjust visualization settings
+5. **Explore**: Navigate the 3D space to understand orbital relationships
+
+## Scientific Data Display
+
+### Orbital Elements Visualization
+The system displays real orbital elements from NASA's database:
+
+- **Semi-major Axis (a)**: Average distance from the Sun in Astronomical Units (AU)
+- **Eccentricity (e)**: Shape of the orbit (0 = circular, 1 = parabolic)
+- **Inclination (i)**: Tilt of orbit relative to Earth's orbital plane
+- **Longitude of Ascending Node (Ω)**: Where orbit crosses the ecliptic plane
+- **Argument of Periapsis (ω)**: Orientation of orbit's closest point to Sun
+- **Mean Anomaly (M)**: Position along orbit at a specific time
+
 ## Features
 
 ### Interactive NEOs
@@ -60,23 +80,23 @@ Click on any NEO (yellow blinking point) in the 3D visualization to see detailed
 
 ## Control Panel Tabs
 
-### 👁️ Visibility Tab
+### Visibility Tab
 
 - Toggle NEOs, trails, Sun, Earth, and Earth's orbit on/off
 - Quick visibility controls for all elements
 
-### 🎨 Appearance Tab
+### Appearance Tab
 
 - **NEO Settings**: Color, size, and blinking speed
 - **Trail Settings**: Color, length, and opacity
 - Customize the visual appearance of all elements
 
-### ⚡ Animation Tab
+### Animation Tab
 
 - **Speed Control**: 10x to 1000x multiplier for all animations
 - Controls Earth orbit speed and NEO movement speed
 
-### 📊 Data Tab
+### Data Tab
 
 - **Max NEOs**: Control how many NEOs to fetch and display (5-50)
 - Data loading preferences
@@ -99,5 +119,62 @@ The speed multiplier affects all moving objects in the simulation:
 - **Time-based Effects**: Blinking and other animations maintain their relative speeds
 
 Speed range: **10x to 1000x** normal speed for observing long-term orbital dynamics.
+
+## Advanced Calculations
+
+### Distance Calculations
+```typescript
+// Real-time distance calculation between NEO and Earth
+function calculateDistance(neoPosition: Vector3, earthPosition: Vector3): number {
+  const dx = neoPosition.x - earthPosition.x;
+  const dy = neoPosition.y - earthPosition.y;
+  const dz = neoPosition.z - earthPosition.z;
+  
+  return Math.sqrt(dx * dx + dy * dy + dz * dz) * AU_TO_UNITS;
+}
+```
+
+### Velocity Calculations
+```typescript
+// Relative velocity calculation
+function calculateRelativeVelocity(neoVelocity: Vector3, earthVelocity: Vector3): number {
+  const relativeVel = neoVelocity.clone().sub(earthVelocity);
+  return relativeVel.length() * KM_PER_S_TO_M_PER_S;
+}
+```
+
+### Impact Probability Assessment
+```typescript
+// Simplified impact probability based on orbital intersection
+function calculateImpactProbability(neo: NEOData, earth: EarthData): number {
+  const minDistance = Math.min(...neo.close_approach_data.map(approach => 
+    parseFloat(approach.miss_distance.kilometers)
+  ));
+  
+  // Simplified probability model
+  const earthRadius = 6371; // km
+  const impactRadius = earthRadius * 2; // Safety factor
+  
+  if (minDistance < impactRadius) {
+    return Math.max(0, 1 - (minDistance / impactRadius));
+  }
+  
+  return 0;
+}
+```
+
+## Educational Features
+
+### Orbital Mechanics Learning
+- **Visual Orbital Paths**: See how NEOs follow elliptical orbits
+- **Kepler's Laws**: Observe equal area swept in equal time
+- **Gravitational Effects**: Watch how NEOs accelerate near the Sun
+- **Orbital Resonance**: Identify NEOs with resonant orbits
+
+### Scientific Notation
+- **Distance Formatting**: Scientific notation with proper units
+- **Velocity Display**: km/s with relative velocity calculations
+- **Time Formatting**: Julian dates and standard calendar dates
+- **Magnitude System**: Absolute magnitude (H) for brightness
 
 The system fetches real data from NASA's NEO API, so all information is current and accurate!
