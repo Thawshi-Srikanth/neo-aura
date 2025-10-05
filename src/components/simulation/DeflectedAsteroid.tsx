@@ -1,10 +1,10 @@
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
-import { useRef, forwardRef, useImperativeHandle, useState, useEffect } from "react";
+import { useRef, forwardRef, useImperativeHandle, useState } from "react";
 import * as THREE from "three";
 import { getAsteroidPosition } from "../../utils/orbital-calculations";
 import type { AsteroidOrbitalData } from "../../types/asteroid";
-import { EARTH_VISUAL_RADIUS, ASTEROID_VISUAL_RADIUS, AU_TO_UNITS, DAYS_PER_SECOND } from "../../config/constants";
+import {  ASTEROID_VISUAL_RADIUS, AU_TO_UNITS } from "../../config/constants";
 
 export const DeflectedAsteroid = forwardRef(({
   orbitalData,
@@ -20,9 +20,7 @@ export const DeflectedAsteroid = forwardRef(({
   isDeflected?: boolean;
 }, ref) => {
   const meshRef = useRef<THREE.Mesh>(null!);
-  const { camera, size } = useThree();
   const [showLabel, setShowLabel] = useState(false);
-  const hasImpactedRef = useRef<boolean>(false);
   const orbitTimeRef = useRef(0);
 
   useImperativeHandle(ref, () => meshRef.current);

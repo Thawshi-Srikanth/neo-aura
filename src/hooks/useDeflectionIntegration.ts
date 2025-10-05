@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import * as THREE from 'three';
 
 export interface DeflectionResult {
   asteroidId: string;

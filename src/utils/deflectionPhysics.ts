@@ -51,9 +51,9 @@ export class DeflectionPhysics {
     timeToImpact: number // days
   ): DeflectionResult {
     // Calculate current orbital parameters
-    const currentVelocity = asteroid.velocity;
-    const currentPosition = asteroid.position;
-    
+    //const currentVelocity = asteroid.velocity;
+    //const currentPosition = asteroid.position;
+
     // Calculate required velocity change based on method
     const velocityChange = this.calculateRequiredVelocityChange(
       asteroid,
@@ -63,19 +63,18 @@ export class DeflectionPhysics {
 
     // Calculate new orbital elements
     const newOrbit = this.calculateNewOrbit(asteroid, velocityChange, method);
-    
+
     // Calculate success probability based on physics
     const success = this.calculateSuccessProbability(asteroid, method, timeToImpact);
-    
+
     // Calculate impact probability reduction
     const impactReduction = this.calculateImpactProbabilityReduction(
       asteroid,
-      newOrbit,
-      timeToImpact
+      newOrbit
     );
 
     // Calculate energy required
-    const energyRequired = this.calculateEnergyRequired(asteroid, velocityChange);
+    const energyRequired = this.calculateEnergyRequired(velocityChange);
 
     return {
       success,
@@ -98,11 +97,11 @@ export class DeflectionPhysics {
   ): THREE.Vector3 {
     // Calculate current velocity vector
     const velocity = new THREE.Vector3(0, 0, asteroid.velocity);
-    
+
     // Calculate deflection direction (away from Earth)
     const earthPosition = new THREE.Vector3(0, 0, 0);
     const asteroidToEarth = earthPosition.clone().sub(asteroid.position).normalize();
-    
+
     // Calculate required velocity change magnitude (much smaller for realistic deflection)
     const requiredChange = this.calculateRequiredChangeMagnitude(
       asteroid,
@@ -114,7 +113,7 @@ export class DeflectionPhysics {
     // Use smaller deflection angles for more realistic changes
     const deflectionAngle = method.physicsParams.directionChange * Math.PI / 180 * 0.1; // 10% of original
     const perpendicular = new THREE.Vector3(-asteroidToEarth.y, asteroidToEarth.x, 0).normalize();
-    
+
     const newDirection = asteroidToEarth.clone()
       .multiplyScalar(Math.cos(deflectionAngle))
       .add(perpendicular.clone().multiplyScalar(Math.sin(deflectionAngle)))
@@ -138,13 +137,13 @@ export class DeflectionPhysics {
   ): number {
     // Calculate current miss distance
     const currentMissDistance = asteroid.missDistance * this.AU_TO_KM;
-    
+
     // Calculate required miss distance (safety margin)
     const requiredMissDistance = this.EARTH_RADIUS * 10; // 10x Earth radius
-    
+
     // Calculate required velocity change using orbital mechanics
     const velocityChange = (currentMissDistance - requiredMissDistance) / (timeToImpact * 24 * 3600);
-    
+
     // Apply method efficiency
     return velocityChange / efficiency;
   }
@@ -159,46 +158,46 @@ export class DeflectionPhysics {
   ): AsteroidOrbitData {
     // Calculate new velocity
     const newVelocity = asteroid.velocity + velocityChange.length();
-    
+
     // Calculate new orbital elements using vis-viva equation
     const mu = this.G * this.EARTH_MASS;
     const r = asteroid.position.length() * this.AU_TO_KM;
     const v = newVelocity;
-    
+
     // Calculate new semi-major axis with validation
     const denominator = 2 - (r * v * v) / mu;
     let newSemiMajorAxis = r / denominator;
-    
+
     // Validate and clamp values to prevent NaN
     if (!isFinite(newSemiMajorAxis) || newSemiMajorAxis <= 0) {
       newSemiMajorAxis = asteroid.semiMajorAxis * this.AU_TO_KM; // Fallback to original
     }
-    
+
     // Calculate new eccentricity with validation
     const h = r * v; // Specific angular momentum
     const eccentricityTerm = 1 - (h * h) / (mu * newSemiMajorAxis);
     let newEccentricity = Math.sqrt(Math.max(0, eccentricityTerm));
-    
+
     // Validate eccentricity
     if (!isFinite(newEccentricity)) {
       newEccentricity = asteroid.eccentricity; // Fallback to original
     }
-    
+
     // Calculate new inclination (deflection changes orbital plane)
     // Much smaller inclination change for subtle deflection
     const inclinationChange = method.physicsParams.directionChange * 0.01; // 1% of original for subtle change
     let newInclination = asteroid.inclination + inclinationChange;
-    
+
     // Validate inclination
     if (!isFinite(newInclination)) {
       newInclination = asteroid.inclination; // Fallback to original
     }
-    
+
     // Calculate new position (deflected trajectory)
     const deflectionFactor = method.physicsParams.efficiency;
     const newPosition = asteroid.position.clone()
       .add(velocityChange.clone().multiplyScalar(deflectionFactor));
-    
+
     // Validate position - check if all components are finite
     if (!isFinite(newPosition.x) || !isFinite(newPosition.y) || !isFinite(newPosition.z)) {
       newPosition.copy(asteroid.position); // Fallback to original
@@ -224,13 +223,13 @@ export class DeflectionPhysics {
   ): number {
     // Calculate deflection angle
     const deflectionAngle = velocityChange.length() / Math.max(0.1, asteroid.velocity);
-    
+
     // Calculate new miss distance using orbital mechanics
     const currentMissDistance = asteroid.missDistance;
-    const deflectionFactor = Math.cos(Math.min(Math.PI/2, deflectionAngle)); // Clamp to prevent negative values
-    
+    const deflectionFactor = Math.cos(Math.min(Math.PI / 2, deflectionAngle)); // Clamp to prevent negative values
+
     const newMissDistance = currentMissDistance * deflectionFactor;
-    
+
     // Validate and ensure positive miss distance
     return Math.max(0.001, newMissDistance); // Minimum 0.001 AU for safety
   }
@@ -258,19 +257,19 @@ export class DeflectionPhysics {
 
     // Calculate base success rate from method
     const baseSuccessRate = method.physicsParams.reliability;
-    
+
     // Apply time factor (earlier deflection = higher success)
     const timeFactor = Math.max(0.1, 1 - (timeToImpact / 365)); // 1 year max
-    
+
     // Apply asteroid size factor (smaller = easier to deflect)
     const sizeFactor = Math.max(0.1, 1 / Math.log(asteroid.velocity + 1));
-    
+
     // Apply method efficiency
     const efficiencyFactor = method.physicsParams.efficiency;
-    
+
     // Calculate final success probability
     const successProbability = baseSuccessRate * timeFactor * sizeFactor * efficiencyFactor;
-    
+
     return Math.random() < successProbability;
   }
 
@@ -279,21 +278,20 @@ export class DeflectionPhysics {
    */
   private static calculateImpactProbabilityReduction(
     originalAsteroid: AsteroidOrbitData,
-    deflectedAsteroid: AsteroidOrbitData,
-    timeToImpact: number
+    deflectedAsteroid: AsteroidOrbitData
   ): number {
     // Calculate original impact probability
     const originalMissDistance = originalAsteroid.missDistance;
     const earthRadiusAU = this.EARTH_RADIUS / this.AU_TO_KM;
     const originalImpactProbability = Math.max(0, 1 - (originalMissDistance / earthRadiusAU));
-    
+
     // Calculate new impact probability
     const newMissDistance = deflectedAsteroid.missDistance;
     const newImpactProbability = Math.max(0, 1 - (newMissDistance / earthRadiusAU));
-    
+
     // Calculate reduction percentage
     const reduction = ((originalImpactProbability - newImpactProbability) / originalImpactProbability) * 100;
-    
+
     return Math.max(0, Math.min(100, reduction));
   }
 
@@ -301,7 +299,6 @@ export class DeflectionPhysics {
    * Calculate energy required for deflection
    */
   private static calculateEnergyRequired(
-    asteroid: AsteroidOrbitData,
     velocityChange: THREE.Vector3
   ): number {
     // Debug controls override
@@ -312,13 +309,13 @@ export class DeflectionPhysics {
     // Estimate asteroid mass (assuming spherical asteroid with density 2.6 g/cm³)
     const asteroidRadius = 0.5; // km (estimated)
     const density = 2600; // kg/m³
-    const volume = (4/3) * Math.PI * Math.pow(asteroidRadius * 1000, 3);
+    const volume = (4 / 3) * Math.PI * Math.pow(asteroidRadius * 1000, 3);
     const mass = density * volume;
-    
+
     // Calculate kinetic energy change
     const velocityChangeMagnitude = velocityChange.length();
     const energyChange = 0.5 * mass * Math.pow(velocityChangeMagnitude, 2);
-    
+
     return energyChange;
   }
 
