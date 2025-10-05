@@ -10,6 +10,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AsteroidImpactSimulation from "./components/views/AsteroidImpactSimulation";
 import BottomBar from "./components/BottomBar";
 import "./styles/leva-horizontal.css";
+import { ThemeProvider } from "./components/theme-provider";
 
 // Configure Leva for horizontal layout
 const levaConfig = {
@@ -47,8 +48,8 @@ function MainScene() {
               {isLoading
                 ? "Loading..."
                 : isReachingEnd
-                ? "No More Asteroids"
-                : "Load More Asteroids"}
+                  ? "No More Asteroids"
+                  : "Load More Asteroids"}
             </button>
             {isError && (
               <div className="status-indicator status-danger">
@@ -119,25 +120,27 @@ function MainScene() {
 
 export default function App() {
   return (
-    <Router>
-      <div className="w-full h-screen">
-        <Routes>
-          <Route path="/" element={<MainScene />} />
-          <Route
-            path="/impact-simulation"
-            element={<AsteroidImpactSimulation />}
-          />
-          <Route
-            path="/impact-simulation/:asteroidId"
-            element={<AsteroidImpactSimulation />}
-          />
-          <Route
-            path="/impact-simulation"
-            element={<AsteroidImpactSimulation />}
-          />
-        </Routes>
-        <BottomBar />
-      </div>
-    </Router>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Router>
+        <div className="w-full h-screen">
+          <Routes>
+            <Route path="/" element={<MainScene />} />
+            <Route
+              path="/impact-simulation"
+              element={<AsteroidImpactSimulation />}
+            />
+            <Route
+              path="/impact-simulation/:asteroidId"
+              element={<AsteroidImpactSimulation />}
+            />
+            <Route
+              path="/impact-simulation"
+              element={<AsteroidImpactSimulation />}
+            />
+          </Routes>
+          <BottomBar />
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
