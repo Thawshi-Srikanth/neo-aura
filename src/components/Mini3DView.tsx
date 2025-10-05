@@ -403,7 +403,7 @@ export function Mini3DView({
   if (!isVisible) return null;
 
   return (
-    <div className={`fixed bottom-5 left-5 z-50 transition-all duration-300 ${isExpanded ? 'w-80 h-60' : 'w-48 h-36'
+    <div className={`fixed bottom-5 left-5 z-50 transition-all duration-300 ${isExpanded ? 'w-[50vw] h-[50vh]' : 'w-48 h-36'
       }`}>
       {/* Mini view container */}
       <div className="relative w-full h-full bg-black/80 rounded-lg overflow-hidden shadow-2xl">

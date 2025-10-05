@@ -1,5 +1,7 @@
 import React from 'react';
 import { useSettingsStore } from '../../store/settingsStore';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '../ui/button';
 
 interface LegendProps {
   showCollisionAsteroid?: boolean;
@@ -22,6 +24,7 @@ export const Legend: React.FC<LegendProps> = ({
   isOptimizing = false
 }) => {
   const { settings } = useSettingsStore();
+  const navigate = useNavigate();
 
   // Don't render if labels are disabled
   if (!settings.showLabels) {
@@ -39,6 +42,18 @@ export const Legend: React.FC<LegendProps> = ({
   return (
     <div className="absolute top-4 left-4 z-50 bg-black/20 backdrop-blur-sm rounded-lg px-3 py-2">
       <div className="flex items-center gap-4">
+        {/* Back Button */}
+        <Button
+          onClick={() => navigate('/')}
+          variant="secondary"
+          size="sm"
+          className="bg-white/10 hover:bg-white/20 text-white border-white/20"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Back
+        </Button>
         {/* Asteroid Name */}
         <div className="text-white text-sm font-medium">
           {asteroidName}

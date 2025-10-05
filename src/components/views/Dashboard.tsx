@@ -32,15 +32,15 @@ export default function Dashboard() {
     }));
 
     return (
-        <div className="h-screen bg-black text-white overflow-hidden">
+        <div className="min-h-screen h-full w-full flex items-center justify-center bg-black text-white overflow-auto">
             {/* Main Dashboard */}
-            <div className="h-full flex flex-col">
-                 <div className="flex-1 max-w-6xl mx-auto px-3 py-2 w-full h-full">
-                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 h-full">
+            <div className="min-h-full flex flex-col h-full w-full items-center justify-center">
+                 <div className="flex-1 max-w-6xl mx-auto px-3 py-2 w-full min-h-full">
+                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 min-h-full">
 
                         {/* Left Column - Featured Asteroids with Search */}
-                        <div className="lg:col-span-1 h-full">
-                            <Card className="bg-black h-full flex flex-col">
+                        <div className="lg:col-span-1 min-h-full">
+                            <Card className="bg-black min-h-full flex flex-col">
                                 <CardHeader className="flex-shrink-0 pb-2">
                                     <div className="flex items-center justify-between">
                                         <CardTitle className="text-white text-sm">Featured Asteroids</CardTitle>
@@ -104,7 +104,7 @@ export default function Dashboard() {
                        </div>
 
                         {/* Right Column - AURA Header */}
-                        <div className="lg:col-span-2 h-full flex flex-col space-y-3">
+                        <div className="lg:col-span-2 min-h-full flex flex-col space-y-3">
 
                             {/* AURA Header */}
                             <Card className="bg-black flex-shrink-0">

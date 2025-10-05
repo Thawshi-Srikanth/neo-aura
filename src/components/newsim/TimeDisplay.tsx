@@ -6,7 +6,10 @@ import {
   Pause,
   FastForward,
   Rewind,
+  ArrowLeft,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../ui/button";
 
 interface TimeDisplayProps {
   currentTime: number;
@@ -31,6 +34,7 @@ const TimeDisplay: React.FC<TimeDisplayProps> = ({
   minTime,
   maxTime,
 }) => {
+  const navigate = useNavigate();
   // Convert days since J2000.0 epoch to actual date
   const j2000 = new Date("2000-01-01T12:00:00Z");
   const currentDate = new Date(
@@ -86,6 +90,19 @@ const TimeDisplay: React.FC<TimeDisplayProps> = ({
   return (
     <div className="absolute top-4 left-4 z-30 bg-black bg-opacity-90 backdrop-blur-sm text-white p-4 rounded-lg border border-gray-700 min-w-96">
       <div className="flex flex-col gap-3">
+        {/* Back Button - Top */}
+        <div className="flex">
+          <Button
+            onClick={() => navigate('/')}
+            variant="secondary"
+            size="sm"
+            className="bg-white/10 hover:bg-white/20 text-white border-white/20"
+          >
+            <ArrowLeft size={14} />
+            Back
+          </Button>
+        </div>
+
         {/* Time Display Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
