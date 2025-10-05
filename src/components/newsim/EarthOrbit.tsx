@@ -1,14 +1,13 @@
 import { useRef, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { positionToLonLat } from "../../utils/coordinates";
 
 interface EarthOrbitProps {
   currentTime: number;
   orbitRadius?: number;
   orbitSpeed?: number;
   visible?: boolean;
-  onCoordinateClick?: (longitude: number, latitude: number) => void;
+  onEarthClick?: () => void;
 }
 
 const EarthOrbit: React.FC<EarthOrbitProps> = ({
@@ -16,31 +15,20 @@ const EarthOrbit: React.FC<EarthOrbitProps> = ({
   orbitRadius = 0.3,
   orbitSpeed = 0.01,
   visible = true,
-  onCoordinateClick,
+  onEarthClick,
 }) => {
   const earthRef = useRef<THREE.Group>(null);
   const lastAppliedTimeRef = useRef<number>(currentTime);
 
   const handleEarthClick = (event: any) => {
-    if (!onCoordinateClick) return;
-
     try {
       // Stop event propagation to prevent orbit controls from interfering
       event.stopPropagation();
 
-      // Get the intersection point in world coordinates
-      const intersectionPoint = event.point as THREE.Vector3;
-      if (!intersectionPoint) return;
-
-      // Convert world position to local Earth coordinates
-      // Account for Earth's orbital position
-      const earthWorldPosition =
-        earthRef.current?.position || new THREE.Vector3(0, 0, 0);
-      const localPoint = intersectionPoint.clone().sub(earthWorldPosition);
-
-      // Convert to longitude/latitude
-      const coords = positionToLonLat(localPoint, 0.02);
-      onCoordinateClick(coords.longitude, coords.latitude);
+      // Notify parent component
+      if (onEarthClick) {
+        onEarthClick();
+      }
     } catch (error) {
       console.warn("Error handling Earth click:", error);
     }
@@ -93,6 +81,7 @@ const EarthOrbit: React.FC<EarthOrbitProps> = ({
   });
 
   if (!visible) return null;
+
   return (
     <group ref={earthRef} onClick={handleEarthClick}>
       {/* Earth sphere with correct scale (much smaller than Sun) - Now brighter! */}

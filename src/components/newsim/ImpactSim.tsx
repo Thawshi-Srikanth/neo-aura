@@ -107,6 +107,7 @@ const ImpactSim = () => {
   const { selectedAsteroid, setSelectedAsteroid } = useAsteroidStore();
 
   const [showPlanetaryDefense, setShowPlanetaryDefense] = useState(false);
+  const [showEarthDetails, setShowEarthDetails] = useState(false);
   const [clickedCoordinates, setClickedCoordinates] = useState<{
     longitude: number;
     latitude: number;
@@ -168,21 +169,20 @@ const ImpactSim = () => {
     setNeoSettings((prev) => ({ ...prev, speedMultiplier: speed }));
   };
 
-  const handleCoordinateClick = (longitude: number, latitude: number) => {
-    setClickedCoordinates({ longitude, latitude });
-    console.log(
-      `Clicked coordinates: ${latitude.toFixed(4)}°${
-        latitude >= 0 ? "N" : "S"
-      }, ${Math.abs(longitude).toFixed(4)}°${longitude >= 0 ? "E" : "W"}`
-    );
-  };
-
   const handleNEOClick = (
     asteroid: Asteroid,
     position: [number, number, number]
   ) => {
     setSelectedAsteroid({ asteroid, position });
     console.log(`Selected NEO: ${asteroid.name}`);
+  };
+
+  const handleEarthClick = () => {
+    setShowEarthDetails(true);
+  };
+
+  const handleCloseEarthDetails = () => {
+    setShowEarthDetails(false);
   };
 
   // Removed handleAsteroidsLoaded - data is now managed by Zustand store
@@ -220,7 +220,7 @@ const ImpactSim = () => {
             orbitRadius={2.0}
             orbitSpeed={0.01}
             visible={true}
-            onCoordinateClick={handleCoordinateClick}
+            onEarthClick={handleEarthClick}
           />
         )}
         <meshStandardMaterial
@@ -278,6 +278,26 @@ const ImpactSim = () => {
         onSettingsChange={setNeoSettings}
         onOpenPlanetaryDefense={handleOpenPlanetaryDefense}
       />
+
+      {/* Earth Details Panel */}
+      {showEarthDetails && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-black bg-opacity-90 text-white p-4 rounded-lg border border-blue-500 backdrop-blur-sm">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-lg font-bold text-blue-300">🌍 Earth</h2>
+            <button
+              onClick={handleCloseEarthDetails}
+              className="text-gray-400 hover:text-white text-lg font-bold ml-4"
+            >
+              ×
+            </button>
+          </div>
+
+          <div className="text-sm">
+            <span className="text-gray-400">Population:</span>
+            <span className="text-green-400 font-bold ml-2">8.1 Billion</span>
+          </div>
+        </div>
+      )}
 
       {/* NEO Detail Panel */}
       {selectedAsteroid && (
