@@ -35,7 +35,7 @@ const NEOControls: React.FC<NEOControlsProps> = ({
     neoColor: "#ffff00",
     neoSize: 0.005,
     blinkSpeed: 1.0,
-    maxNEOs: 4,
+    maxNEOs: 10,
     speedMultiplier: 10,
   });
 

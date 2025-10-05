@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import useSWR from "swr";
 import { fetcher, getAsteroidsUrl } from "../../api/asteroidApi";
 import { getAsteroidPosition } from "../../utils/orbital-calculations";
+import { useAsteroidStore } from "../../store/asteroidStore";
 import NEOOrbitPath from "./NEOOrbitPath";
 import type { Asteroid } from "../../types/asteroid";
 
@@ -40,16 +41,6 @@ const SimpleNEOPoint: React.FC<SimpleNEOPointProps> = ({
       const scale = 2.0;
       // Proper coordinate mapping: X=X, Y=inclination(up/down), Z=Z(depth)
       const worldPos = new THREE.Vector3(x * scale, y * scale, z * scale);
-
-      // Debug: Log inclination for first few NEOs
-      if (Math.random() < 0.01) {
-        // Only log occasionally to avoid spam
-        console.log(
-          `NEO ${asteroid.name}: Inclination = ${
-            asteroid.orbital_data.inclination
-          }°, Y-position = ${(y * scale).toFixed(3)}`
-        );
-      }
 
       meshRef.current.position.copy(worldPos);
       meshRef.current.visible = true;
@@ -119,6 +110,7 @@ interface SimpleNEOSystemProps {
   maxNEOs?: number;
   currentTime?: number;
   onNEOClick?: (asteroid: Asteroid, position: [number, number, number]) => void;
+  onAsteroidsLoaded?: (asteroids: Asteroid[]) => void;
 }
 
 const SimpleNEOSystem: React.FC<SimpleNEOSystemProps> = ({
@@ -127,17 +119,23 @@ const SimpleNEOSystem: React.FC<SimpleNEOSystemProps> = ({
   neoColor = "#ffff00",
   neoSize = 0.005,
   blinkSpeed = 1.0,
-  maxNEOs = 20,
+  maxNEOs = 10,
   currentTime = 0,
   onNEOClick,
+  onAsteroidsLoaded,
 }) => {
-  const [asteroids, setAsteroids] = useState<Asteroid[]>([]);
+  // Use Zustand store for asteroid data
+  const { asteroids, setAsteroids, setLoading, setError } = useAsteroidStore();
 
   // Fetch NEO data from NASA API (same as NEOManagerWithData)
   const { data, isLoading } = useSWR(getAsteroidsUrl(0, maxNEOs), fetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
+
+  useEffect(() => {
+    setLoading(isLoading);
+  }, [isLoading, setLoading]);
 
   useEffect(() => {
     if (data?.near_earth_objects) {
@@ -151,9 +149,17 @@ const SimpleNEOSystem: React.FC<SimpleNEOSystemProps> = ({
           asteroid.orbital_data.mean_motion
       );
       const filteredAsteroids = validAsteroids.slice(0, maxNEOs);
+
+      // Update Zustand store
       setAsteroids(filteredAsteroids);
+      setError(null);
+
+      // Keep backward compatibility with callback prop
+      if (onAsteroidsLoaded) {
+        onAsteroidsLoaded(filteredAsteroids);
+      }
     }
-  }, [data, maxNEOs]);
+  }, [data, maxNEOs, onAsteroidsLoaded, setAsteroids, setError]);
 
   // Color-blind friendly bright colors for orbital paths in space
   const orbitColors = [

@@ -95,10 +95,16 @@ const EarthOrbit: React.FC<EarthOrbitProps> = ({
   if (!visible) return null;
   return (
     <group ref={earthRef} onClick={handleEarthClick}>
-      {/* Earth sphere with correct scale (much smaller than Sun) */}
+      {/* Earth sphere with correct scale (much smaller than Sun) - Now brighter! */}
       <mesh>
         <sphereGeometry args={[0.02, 32, 32]} />
-        <meshPhongMaterial color="#4472CA" />
+        <meshStandardMaterial
+          color="#00BFFF"
+          emissive="#004080"
+          emissiveIntensity={0.4}
+          roughness={0.7}
+          metalness={0.3}
+        />
       </mesh>
     </group>
   );

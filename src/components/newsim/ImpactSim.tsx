@@ -10,6 +10,7 @@ import EarthOrbitPath from "./EarthOrbitPath";
 import NEODetailPanel from "./NEODetailPanel";
 import TimeDisplay from "./TimeDisplay";
 import PlanetaryDefensePanel from "./PlanetaryDefensePanel";
+import { useAsteroidStore } from "../../store/asteroidStore";
 import type { Asteroid } from "../../types/asteroid";
 
 // Enhanced time controller for manual and automatic time control
@@ -102,12 +103,10 @@ const ImpactSim = () => {
   // Initialize with current time in days since J2000.0 epoch (2000-01-01)
   const [currentTime, setCurrentTime] = useState(initialTime);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [selectedNEO, setSelectedNEO] = useState<{
-    asteroid: Asteroid;
-    position: [number, number, number];
-  } | null>(null);
+  // Use Zustand store for asteroid data
+  const { selectedAsteroid, setSelectedAsteroid } = useAsteroidStore();
+
   const [showPlanetaryDefense, setShowPlanetaryDefense] = useState(false);
-  const [asteroids] = useState<Asteroid[]>([]);
   const [clickedCoordinates, setClickedCoordinates] = useState<{
     longitude: number;
     latitude: number;
@@ -121,12 +120,12 @@ const ImpactSim = () => {
     neoColor: "#03FF92",
     neoSize: 0.0015,
     blinkSpeed: 2.0,
-    maxNEOs: 4, // Reduced for better visibility of orbital paths
+    maxNEOs: 10, // Increased for better Planetary Defense analysis
     speedMultiplier: 10,
   });
 
   const handleCloseDetail = () => {
-    setSelectedNEO(null);
+    setSelectedAsteroid(null);
   };
 
   const handleOpenPlanetaryDefense = () => {
@@ -182,8 +181,14 @@ const ImpactSim = () => {
     asteroid: Asteroid,
     position: [number, number, number]
   ) => {
-    setSelectedNEO({ asteroid, position });
+    setSelectedAsteroid({ asteroid, position });
     console.log(`Selected NEO: ${asteroid.name}`);
+  };
+
+  // This callback is now optional since data is managed by Zustand
+  const handleAsteroidsLoaded = (loadedAsteroids: Asteroid[]) => {
+    // Data is already in the store, this is just for backward compatibility
+    console.log(`Loaded ${loadedAsteroids.length} asteroids into store`);
   };
 
   return (
@@ -207,8 +212,8 @@ const ImpactSim = () => {
           <EarthOrbitPath
             orbitRadius={2.0}
             visible={true}
-            color="#4a90e2"
-            opacity={0.3}
+            color="#00BFFF"
+            opacity={0.9}
           />
         )}
 
@@ -221,7 +226,13 @@ const ImpactSim = () => {
             onCoordinateClick={handleCoordinateClick}
           />
         )}
-
+        <meshStandardMaterial
+          color="#00BFFF" // Bright blue
+          emissive="#004080" // Blue glow
+          emissiveIntensity={0.4} // Strong emission
+          roughness={0.5} // Surface texture
+          metalness={0.3} // Slight metallic sheen
+        />
         {/* Simple NEO System - Clean NEO Points and Orbital Paths */}
         <SimpleNEOSystem
           showNEOs={neoSettings.showNEOs}
@@ -232,6 +243,7 @@ const ImpactSim = () => {
           maxNEOs={neoSettings.maxNEOs}
           currentTime={currentTime}
           onNEOClick={handleNEOClick}
+          onAsteroidsLoaded={handleAsteroidsLoaded}
         />
 
         <OrbitControls
@@ -272,17 +284,16 @@ const ImpactSim = () => {
       />
 
       {/* NEO Detail Panel */}
-      {selectedNEO && (
+      {selectedAsteroid && (
         <NEODetailPanel
-          asteroid={selectedNEO.asteroid}
+          asteroid={selectedAsteroid.asteroid}
           onClose={handleCloseDetail}
-          visible={!!selectedNEO}
+          visible={!!selectedAsteroid}
         />
       )}
 
       {/* Planetary Defense Panel */}
       <PlanetaryDefensePanel
-        asteroids={asteroids}
         visible={showPlanetaryDefense}
         onClose={handleClosePlanetaryDefense}
       />

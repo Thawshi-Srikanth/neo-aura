@@ -95,9 +95,10 @@ export function getEarthPosition(t: number): [number, number, number] {
   const x =
     x_orbital * (cos_w * cos_omega - sin_w * sin_omega * cos_i) -
     y_orbital * (sin_w * cos_omega + cos_w * sin_omega * cos_i);
-  const z =
+  const z = -(
     x_orbital * (cos_w * sin_omega + sin_w * cos_omega * cos_i) +
-    y_orbital * (-sin_w * sin_omega + cos_w * cos_omega * cos_i);
+    y_orbital * (-sin_w * sin_omega + cos_w * cos_omega * cos_i)
+  );
   const y = x_orbital * (sin_w * sin_i) + y_orbital * (cos_w * sin_i);
 
   return [x, y, z];
@@ -149,12 +150,14 @@ export function getAsteroidPosition(
   // - X-axis points toward vernal equinox (0° longitude)
   // - Y-axis points toward 90° longitude (perpendicular to X in ecliptic plane)
   // - Z-axis points toward north ecliptic pole (perpendicular to ecliptic plane)
+  // FIXED: Ensure counter-clockwise motion by flipping Z coordinate
   const x =
     x_orbital * (cos_w * cos_omega - sin_w * sin_omega * cos_i) -
     y_orbital * (sin_w * cos_omega + cos_w * sin_omega * cos_i);
-  const z =
+  const z = -(
     x_orbital * (cos_w * sin_omega + sin_w * cos_omega * cos_i) +
-    y_orbital * (-sin_w * sin_omega + cos_w * cos_omega * cos_i);
+    y_orbital * (-sin_w * sin_omega + cos_w * cos_omega * cos_i)
+  );
   const y = x_orbital * (sin_w * sin_i) + y_orbital * (cos_w * sin_i);
 
   return [x, y, z];
