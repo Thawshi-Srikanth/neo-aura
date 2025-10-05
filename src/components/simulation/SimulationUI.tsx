@@ -5,7 +5,7 @@ import TrajectoryOptimizationProgress from "../controls/TrajectoryOptimizationPr
 import SpeedControls from "../controls/SpeedControls";
 import { Mini3DView } from "../Mini3DView";
 import { DeflectAsteroidButton } from "../cli/DeflectAsteroidButton";
-import { DAYS_PER_SECOND } from "../../config/constants";
+import { useParams } from "react-router-dom";
 import { SIMULATION_CONSTANTS } from "../../config/simulationConstants";
 import type { Asteroid } from "../../types/asteroid";
 import type { CollisionOrbit } from "../../utils/orbitalCollision";
@@ -18,8 +18,6 @@ interface SimulationUIProps {
 
   // Simulation state
   isImpactTrajectorySet: boolean;
-  impactCountdownSeconds: number | null;
-  collisionDetected: boolean;
   isOptimizing: boolean;
   hasImpacted: boolean;
   showLoadingScreen: boolean;
@@ -47,8 +45,6 @@ export const SimulationUI = ({
   impactData,
   currentAsteroid,
   isImpactTrajectorySet,
-  impactCountdownSeconds,
-  collisionDetected,
   isOptimizing,
   hasImpacted,
   showLoadingScreen,
@@ -65,6 +61,7 @@ export const SimulationUI = ({
   onImpactDataClose,
   onDeflectionAttempt,
 }: SimulationUIProps) => {
+  const { asteroidId } = useParams();
   return (
     <>
       {/* Loading Screen */}
@@ -96,25 +93,12 @@ export const SimulationUI = ({
       />
 
       {/* Hidden DeflectAsteroidButton for terminal logic */}
-      <DeflectAsteroidButton onDeflectionAttempt={onDeflectionAttempt} />
+      <DeflectAsteroidButton 
+        onDeflectionAttempt={onDeflectionAttempt} 
+        asteroidId={asteroidId}
+      />
 
 
-      {/* Countdown Timer */}
-      {isImpactTrajectorySet &&
-        !impactPosition &&
-        impactCountdownSeconds &&
-        !collisionDetected && (
-          <div className="fixed top-4 right-4 z-50">
-            <div className="glass-panel border-red-500/50 bg-red-900/20 px-4 py-2 shadow-2xl rounded-lg">
-              <div
-                id="countdown-timer"
-                className="text-2xl font-bold text-white font-mono"
-              >
-                {(impactCountdownSeconds / DAYS_PER_SECOND).toFixed(1)}d
-              </div>
-            </div>
-          </div>
-        )}
 
       {/* Impact Analysis Panel */}
       {impactData && (impactData as any).physics && (

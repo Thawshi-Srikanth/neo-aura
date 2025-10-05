@@ -249,8 +249,8 @@ function PathToImpact({
       const earthPosition = new THREE.Vector3(earthX * AU_TO_UNITS, earthY * AU_TO_UNITS, earthZ * AU_TO_UNITS);
 
       // Calculate positions relative to Earth (Earth is at origin in mini view)
-      const asteroidRelativePos = asteroidPosition.clone().sub(earthPosition);
-      const impactRelativePos = impactPosition.clone().sub(earthPosition);
+      const asteroidRelativePos = asteroidPosition.clone().sub(earthPosition).multiplyScalar(0.3);
+      const impactRelativePos = impactPosition.clone().sub(earthPosition).multiplyScalar(0.3);
 
       // Create curved trajectory points that curve toward the specific impact location
       const points: THREE.Vector3[] = [];
@@ -361,7 +361,10 @@ function MiniAsteroid({
 
       // Position asteroid relative to Earth (Earth is at origin in mini view)
       const relativePosition = asteroidPosition.clone().sub(earthPosition);
-      groupRef.current.position.copy(relativePosition);
+      
+      // Scale down the distance for better visibility in mini view
+      const scaledPosition = relativePosition.multiplyScalar(0.3);
+      groupRef.current.position.copy(scaledPosition);
 
       // Rotate asteroid
       if (meshRef.current) {
@@ -417,10 +420,10 @@ export function Mini3DView({
         </div>
 
         {/* 3D Canvas - Focused on Earth and Asteroid */}
-        <Canvas
-          camera={{ position: [0, 0, 4], fov: 60 }}
-          className="w-full h-full"
-        >
+      <Canvas
+        camera={{ position: [0, 0, 1.5], fov: 40 }}
+        className="w-full h-full"
+      >
           <ambientLight intensity={0.6} />
           <directionalLight position={[5, 5, 5]} intensity={1.0} />
 
@@ -448,7 +451,7 @@ export function Mini3DView({
             impactPosition={impactPosition}
           />
 
-          {/* Controls - Enable zoom for close-up viewing */}
+          {/* Controls - Keep zoomed in on Earth and impact */}
           <OrbitControls
             enableZoom={true}
             enablePan={true}
@@ -456,8 +459,9 @@ export function Mini3DView({
             rotateSpeed={0.5}
             zoomSpeed={1.2}
             panSpeed={0.8}
-            minDistance={0.01}
-            maxDistance={20}
+            minDistance={1.2}
+            maxDistance={3}
+            target={[0, 0, 0]}
           />
         </Canvas>
 

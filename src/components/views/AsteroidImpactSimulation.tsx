@@ -3,6 +3,7 @@ import { useRef } from "react";
 import * as THREE from "three";
 // import { OrbitControls } from "@react-three/drei";
 import { useAsteroidImpactSimulation } from "../../hooks/useAsteroidImpactSimulation";
+import { useDeflectionIntegration } from "../../hooks/useDeflectionIntegration";
 import { SimulationScene } from "../simulation/SimulationScene";
 import { SimulationUI } from "../simulation/SimulationUI";
 import { calculateImpactPhysics } from "../../utils/impactPhysics";
@@ -28,6 +29,9 @@ export default function AsteroidImpactSimulation() {
     simulationState,
     simulationActions,
   } = useAsteroidImpactSimulation(asteroidId);
+
+  // Use deflection integration hook
+  const { deflectionResult, isDeflected } = useDeflectionIntegration();
 
   // Get settings for physics calculations
   const { settings } = useSettingsStore();
@@ -109,6 +113,26 @@ export default function AsteroidImpactSimulation() {
     }
   };
 
+  // Create deflected asteroid with modified orbital data (as a copy for visualization)
+  const deflectedAsteroid = deflectionResult && 
+                           deflectionResult.deflected && 
+                           deflectionResult.deflected.success ? {
+    ...currentAsteroid,
+    orbital_data: {
+      ...currentAsteroid.orbital_data,
+      eccentricity: deflectionResult.deflected.eccentricity.toString(),
+      inclination: deflectionResult.deflected.inclination.toString(),
+      semi_major_axis: deflectionResult.deflected.semiMajorAxis.toString(),
+    },
+    close_approach_data: currentAsteroid.close_approach_data.map(approach => ({
+      ...approach,
+      relative_velocity: {
+        ...approach.relative_velocity,
+        kilometers_per_second: deflectionResult.deflected.velocity.toString()
+      }
+    }))
+  } : currentAsteroid;
+
   return (
     <div className="relative w-full h-screen bg-black overflow-hidden">
       {/* Simulation UI Components */}
@@ -116,8 +140,6 @@ export default function AsteroidImpactSimulation() {
         impactData={simulationState.impactData}
         currentAsteroid={currentAsteroid}
         isImpactTrajectorySet={state.isImpactTrajectorySet}
-        impactCountdownSeconds={state.impactCountdownSeconds}
-        collisionDetected={state.collisionDetected}
         isOptimizing={state.isOptimizing}
         hasImpacted={state.hasImpacted}
         showLoadingScreen={state.showLoadingScreen}
@@ -137,7 +159,7 @@ export default function AsteroidImpactSimulation() {
 
       {/* 3D Simulation Scene */}
       <SimulationScene
-        currentAsteroid={currentAsteroid}
+        currentAsteroid={isDeflected && deflectionResult ? deflectedAsteroid : currentAsteroid}
         impactPosition={simulationState.impactPosition}
         impactData={simulationState.impactData}
         asteroidVisible={simulationState.asteroidVisible}
@@ -163,6 +185,8 @@ export default function AsteroidImpactSimulation() {
         collisionAsteroidRef={collisionAsteroidRef}
             sunRef={sunRef}
         controlsRef={controlsRef}
+        isDeflected={isDeflected}
+        deflectionResult={deflectionResult}
       />
     </div>
   );

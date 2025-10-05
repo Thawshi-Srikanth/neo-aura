@@ -7,16 +7,13 @@ interface NEOControlsProps {
 
 export interface NEOSettings {
   showNEOs: boolean;
-  showTrails: boolean;
+  showOrbits: boolean;
   showSun: boolean;
   showEarth: boolean;
   showEarthOrbit: boolean;
   neoColor: string;
   neoSize: number;
   blinkSpeed: number;
-  trailColor: string;
-  trailLength: number;
-  trailOpacity: number;
   maxNEOs: number;
   speedMultiplier: number;
 }
@@ -31,17 +28,14 @@ const NEOControls: React.FC<NEOControlsProps> = ({
   const [activeTab, setActiveTab] = useState<TabType>("visibility");
   const [settings, setSettings] = useState<NEOSettings>({
     showNEOs: true,
-    showTrails: true,
+    showOrbits: true,
     showSun: true,
     showEarth: true,
     showEarthOrbit: true,
     neoColor: "#ffff00",
     neoSize: 0.005,
     blinkSpeed: 1.0,
-    trailColor: "#ffff00",
-    trailLength: 50,
-    trailOpacity: 0.6,
-    maxNEOs: 20,
+    maxNEOs: 10,
     speedMultiplier: 10,
   });
 
@@ -78,11 +72,11 @@ const NEOControls: React.FC<NEOControlsProps> = ({
             <label className="flex items-center space-x-2">
               <input
                 type="checkbox"
-                checked={settings.showTrails}
-                onChange={(e) => updateSetting("showTrails", e.target.checked)}
+                checked={settings.showOrbits}
+                onChange={(e) => updateSetting("showOrbits", e.target.checked)}
                 className="rounded"
               />
-              <span>Show Trails</span>
+              <span>Show NEO Orbital Paths</span>
             </label>
             <label className="flex items-center space-x-2">
               <input
@@ -172,51 +166,7 @@ const NEOControls: React.FC<NEOControlsProps> = ({
               <h4 className="text-yellow-300 font-semibold mb-2">
                 Trail Settings
               </h4>
-              <div className="space-y-3">
-                <label className="block">
-                  <span className="text-sm">Trail Color:</span>
-                  <input
-                    type="color"
-                    value={settings.trailColor}
-                    onChange={(e) =>
-                      updateSetting("trailColor", e.target.value)
-                    }
-                    className="w-full h-8 rounded border-0 mt-1"
-                  />
-                </label>
-                <label className="block">
-                  <span className="text-sm">
-                    Trail Length: {settings.trailLength}
-                  </span>
-                  <input
-                    type="range"
-                    min="10"
-                    max="200"
-                    step="10"
-                    value={settings.trailLength}
-                    onChange={(e) =>
-                      updateSetting("trailLength", parseInt(e.target.value))
-                    }
-                    className="w-full mt-1"
-                  />
-                </label>
-                <label className="block">
-                  <span className="text-sm">
-                    Trail Opacity: {settings.trailOpacity.toFixed(1)}
-                  </span>
-                  <input
-                    type="range"
-                    min="0.1"
-                    max="1.0"
-                    step="0.1"
-                    value={settings.trailOpacity}
-                    onChange={(e) =>
-                      updateSetting("trailOpacity", parseFloat(e.target.value))
-                    }
-                    className="w-full mt-1"
-                  />
-                </label>
-              </div>
+              <div className="space-y-3"></div>
             </div>
           </div>
         );

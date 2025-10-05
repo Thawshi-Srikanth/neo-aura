@@ -1,7 +1,6 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import Earth from "./components/Earth";
-import LevaControls from "./components/controls/LevaControls";
 import { Leva } from "leva";
 import InstancedAsteroidOrbit from "./components/InstancedAstroidOrbit";
 import Stars from "./components/Starts";
@@ -33,7 +32,7 @@ function MainScene() {
   return (
     <div className="relative w-full h-full bg-black">
       <Leva {...levaConfig} />
-      <LevaControls />
+      {/* <LevaControls /> */}
 
       {/* SpaceX-style Header */}
       <div className="absolute top-6 left-6 z-10">
@@ -140,14 +139,14 @@ export default function App() {
             element={<AsteroidImpactSimulation />}
           />
           <Route
-            path="/imp-sim"
+            path="/asteroid-sim"
             element={
               <Suspense
                 fallback={
                   <div className="flex items-center justify-center h-screen bg-black">
                     <div className="text-white text-center">
                       <div className="animate-spin w-8 h-8 border-2 border-white/30 border-t-white rounded-full mx-auto mb-4"></div>
-                      <div>Loading Impact Simulation...</div>
+                      <div>Loading Asteroid Simulation...</div>
                     </div>
                   </div>
                 }
