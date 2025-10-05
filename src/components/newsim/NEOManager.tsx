@@ -2,18 +2,13 @@ import { useState, useEffect } from "react";
 import useSWR from "swr";
 import { fetcher, getAsteroidsUrl } from "../../api/asteroidApi";
 import NEOPoint from "./NEOPoint";
-import NEOTrail from "./NEOTrail";
 import type { Asteroid } from "../../types/asteroid";
 
 interface NEOManagerProps {
-  showTrails?: boolean;
   showNEOs?: boolean;
   neoColor?: string;
   neoSize?: number;
   blinkSpeed?: number;
-  trailColor?: string;
-  trailLength?: number;
-  trailOpacity?: number;
   maxNEOs?: number;
   currentTime?: number;
   onNEOClick?: (asteroid: Asteroid, position: [number, number, number]) => void;
@@ -22,14 +17,10 @@ interface NEOManagerProps {
 }
 
 const NEOManager: React.FC<NEOManagerProps> = ({
-  showTrails = true,
   showNEOs = true,
   neoColor = "#ffff00",
   neoSize = 0.005,
   blinkSpeed = 1.0,
-  trailColor = "#61FAFA",
-  trailLength = 50,
-  trailOpacity = 0.6,
   maxNEOs = 20,
   currentTime = 0,
   onNEOClick,
@@ -91,16 +82,6 @@ const NEOManager: React.FC<NEOManagerProps> = ({
               visible={showNEOs}
               onClick={onNEOClick}
               isSelected={selectedNEOId === asteroid.id}
-            />
-          )}
-          {showTrails && (
-            <NEOTrail
-              asteroid={asteroid}
-              currentTime={currentTime}
-              trailLength={trailLength}
-              trailColor={trailColor}
-              trailOpacity={trailOpacity}
-              visible={showTrails}
             />
           )}
         </group>

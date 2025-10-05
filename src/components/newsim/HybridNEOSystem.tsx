@@ -8,15 +8,10 @@ import type { Asteroid } from "../../types/asteroid";
 interface HybridNEOSystemProps {
   asteroids: Asteroid[];
   currentTime: number;
-  showTrails?: boolean;
   showNEOs?: boolean;
   neoColor?: string;
   neoSize?: number;
   blinkSpeed?: number;
-  trailColor?: string;
-  trailLength?: number;
-  trailOpacity?: number;
-  pointsPerTrail?: number;
   lodDistance?: number;
   maxRenderDistance?: number;
   onNEOClick?: (asteroid: Asteroid, position: [number, number, number]) => void;

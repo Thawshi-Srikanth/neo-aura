@@ -3,19 +3,14 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { getAsteroidPosition } from "../../utils/orbital-calculations";
 import type { Asteroid } from "../../types/asteroid";
-import InstancedNEOTrails from "./InstancedNEOTrails";
 
 interface InstancedNEOManagerProps {
   asteroids: Asteroid[];
   currentTime: number;
-  showTrails?: boolean;
   showNEOs?: boolean;
   neoColor?: string;
   neoSize?: number;
   blinkSpeed?: number;
-  trailColor?: string;
-  trailLength?: number;
-  trailOpacity?: number;
   onNEOClick?: (asteroid: Asteroid, position: [number, number, number]) => void;
   selectedNEOId?: string | null;
 }
@@ -23,14 +18,10 @@ interface InstancedNEOManagerProps {
 const InstancedNEOManager: React.FC<InstancedNEOManagerProps> = ({
   asteroids,
   currentTime,
-  showTrails = true,
   showNEOs = true,
   neoColor = "#ffff00",
   neoSize = 0.005,
   blinkSpeed = 1.0,
-  trailColor = "#61FAFA",
-  trailLength = 50,
-  trailOpacity = 0.6,
   onNEOClick,
   selectedNEOId,
 }) => {
@@ -189,7 +180,7 @@ const InstancedNEOManager: React.FC<InstancedNEOManagerProps> = ({
     [onNEOClick]
   );
 
-  if (!showNEOs && !showTrails) return null;
+  if (!showNEOs) return null;
 
   return (
     <group>
@@ -203,17 +194,6 @@ const InstancedNEOManager: React.FC<InstancedNEOManagerProps> = ({
             asteroidDataRef.current.validAsteroids.length,
           ]}
           onClick={handleClick}
-        />
-      )}
-
-      {/* Instanced NEO Trails */}
-      {showTrails && (
-        <InstancedNEOTrails
-          asteroids={asteroidDataRef.current.validAsteroids}
-          currentTime={currentTime}
-          trailLength={trailLength}
-          trailColor={trailColor}
-          trailOpacity={trailOpacity}
         />
       )}
     </group>

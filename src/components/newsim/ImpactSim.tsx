@@ -2,7 +2,6 @@ import { OrbitControls, Stars } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef, useState, useMemo } from "react";
 
-import NEOManagerWithData from "./NEOManagerWithData";
 import SimpleNEOSystem from "./SimpleNEOSystem";
 import NEOControls, { type NEOSettings } from "./NEOControls";
 import Sun from "./Sun";
@@ -108,33 +107,22 @@ const ImpactSim = () => {
     position: [number, number, number];
   } | null>(null);
   const [showPlanetaryDefense, setShowPlanetaryDefense] = useState(false);
-  const [asteroids, setAsteroids] = useState<Asteroid[]>([]);
+  const [asteroids] = useState<Asteroid[]>([]);
   const [clickedCoordinates, setClickedCoordinates] = useState<{
     longitude: number;
     latitude: number;
   } | null>(null);
   const [neoSettings, setNeoSettings] = useState<NEOSettings>({
     showNEOs: true,
-    showTrails: true,
     showSun: true,
     showEarth: true,
     showEarthOrbit: true,
-    neoColor: "#ffff00",
-    neoSize: 0.005,
-    blinkSpeed: 1.0,
-    trailColor: "#61FAFA",
-    trailLength: 50,
-    trailOpacity: 0.6,
+    neoColor: "#03FF92",
+    neoSize: 0.0015,
+    blinkSpeed: 2.0,
     maxNEOs: 100, // Increased for performance testing with InstancedMesh
     speedMultiplier: 10,
   });
-
-  const handleNEOClick = (
-    asteroid: Asteroid,
-    position: [number, number, number]
-  ) => {
-    setSelectedNEO({ asteroid, position });
-  };
 
   const handleCloseDetail = () => {
     setSelectedNEO(null);
@@ -146,10 +134,6 @@ const ImpactSim = () => {
 
   const handleClosePlanetaryDefense = () => {
     setShowPlanetaryDefense(false);
-  };
-
-  const handleAsteroidsLoaded = (loadedAsteroids: Asteroid[]) => {
-    setAsteroids(loadedAsteroids);
   };
 
   // Time control handlers
@@ -193,13 +177,21 @@ const ImpactSim = () => {
     );
   };
 
+  const handleNEOClick = (
+    asteroid: Asteroid,
+    position: [number, number, number]
+  ) => {
+    setSelectedNEO({ asteroid, position });
+    console.log(`Selected NEO: ${asteroid.name}`);
+  };
+
   return (
     <div className="relative w-full h-screen bg-black overflow-hidden">
       {/* Canvas with WebGL error recovery */}
       <Canvas
         key="impact-sim-canvas"
         className="absolute inset-0 w-full h-full bg-black"
-        camera={{ position: [1, 0.5, 1], fov: 30 }}
+        camera={{ position: [3, 2, 3], fov: 50 }}
         gl={{ preserveDrawingBuffer: false, powerPreference: "default" }}
       >
         <ambientLight intensity={2} />
@@ -207,12 +199,12 @@ const ImpactSim = () => {
         <Stars count={500} fade radius={100} />
 
         {neoSettings.showSun && (
-          <Sun position={[0, 0, 0]} size={0.02} visible={true} />
+          <Sun position={[0, 0, 0]} size={0.15} visible={true} />
         )}
 
         {neoSettings.showEarthOrbit && (
           <EarthOrbitPath
-            orbitRadius={0.3}
+            orbitRadius={2.0}
             visible={true}
             color="#4a90e2"
             opacity={0.3}
@@ -222,38 +214,29 @@ const ImpactSim = () => {
         {neoSettings.showEarth && (
           <EarthOrbit
             currentTime={currentTime}
-            orbitRadius={0.3}
+            orbitRadius={2.0}
             orbitSpeed={0.01}
             visible={true}
             onCoordinateClick={handleCoordinateClick}
           />
         )}
 
-        {/* Simple NEO System - Navigation Compatible with Controlled Trails */}
+        {/* Simple NEO System - Clean NEO Points Only */}
         <SimpleNEOSystem
           showNEOs={neoSettings.showNEOs}
-          showTrails={neoSettings.showTrails}
           neoColor={neoSettings.neoColor}
           neoSize={neoSettings.neoSize}
           blinkSpeed={neoSettings.blinkSpeed}
-          trailColor={neoSettings.trailColor}
-          trailLength={Math.min(neoSettings.trailLength, 20)} // Max 20 for readability
-          trailOpacity={Math.min(neoSettings.trailOpacity, 0.4)} // Max 0.4 for subtle trails
-          pointsPerTrail={15} // Reduced from 50 to 15
-          maxNEOs={Math.min(neoSettings.maxNEOs, 10)} // Reduce NEOs to 10 for less clutter
+          maxNEOs={neoSettings.maxNEOs}
           currentTime={currentTime}
+          onNEOClick={handleNEOClick}
         />
-
-        {/* Debug overlay in 3D space (optional) */}
-        <group position={[0, -0.25, 0]}>
-          {/* Could add a small text sprite later */}
-        </group>
 
         <OrbitControls
           ref={controlsRef}
           target={[0, 0, 0]}
-          minDistance={0.2}
-          maxDistance={5}
+          minDistance={1.0}
+          maxDistance={15}
           enablePan
           enableZoom
           enableRotate
